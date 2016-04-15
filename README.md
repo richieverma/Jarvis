@@ -1,2 +1,2 @@
 # Jarvis
-Project Jarvis - Personalzed information feed system for fantasy basketball
+Project JARVIS - Personalized Information Feed System For Fantasy Basketball
