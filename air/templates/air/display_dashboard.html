@@ -1,0 +1,42 @@
+{% load staticfiles %}
+<html>
+    <head>
+    	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <style>
+            div.background {
+                background: url('{% static 'images/Background.jpg' %}');
+                background-size: contain;
+                border: 2px solid black;
+                opacity:0.5;
+            }
+            div.hilight {
+                 position: absolute;
+                 color: Black;
+                 top: 0px;
+                 left:41%;
+                 z-index: 1;
+            }
+        </style>
+        <title>DASHBOARD</title>
+    </head>
+    <body>
+    <div class="background">
+        <h1 align="center";>_</h1> 
+    </div>
+
+    <div class="hilight">
+        <h1 align="center";>DASHBOARD</h1>
+    </div>    
+       
+
+    <ul>
+    <br>
+    {% for post in data %}
+        {% static "images/" as baseUrl %}
+        <li><img id="replace_img" src="{{ baseUrl }}/{{post.Team}}.jpg" height="42" width="42">{{ post.Player }} <sub> {{post.Score}} </sub> </li>
+    {% endfor %}
+    </ul>
+    
+    </body>
+</html>
