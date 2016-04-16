@@ -21,3 +21,5 @@ def check_login(request):
             print "fail"
 	    return render(request, 'air/login.html', {})
 
+def display_dashboard(username,request):
+    return render(request, 'air/login.html', {})
