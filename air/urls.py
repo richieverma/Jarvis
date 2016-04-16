@@ -19,5 +19,4 @@ urlpatterns = [
     url(r'^check_login','air.views.check_login'),
     url(r'^$', 'air.views.login'),
     url(r'dashboard', views.display_dashboard, name='display_dashboard'),
-    
 ]

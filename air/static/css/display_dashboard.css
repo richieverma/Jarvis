@@ -1,3 +1,9 @@
-h1 {
-	background-color=rgba(255,0,0,0.1);
+div div ul {
+  width: 30em;
 }
+
+ ul li
+  {
+    float: left;
+    width: 10em;
+  }

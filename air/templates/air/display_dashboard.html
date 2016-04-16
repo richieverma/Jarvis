@@ -20,6 +20,7 @@
         </style>
         <title>DASHBOARD</title>
     </head>
+
     <body>
     <div class="background">
         <h1 align="center";>_</h1> 
@@ -28,15 +29,51 @@
     <div class="hilight">
         <h1 align="center";>DASHBOARD</h1>
     </div>    
-       
-
-    <ul>
-    <br>
-    {% for post in data %}
-        {% static "images/" as baseUrl %}
-        <li><img id="replace_img" src="{{ baseUrl }}/{{post.Team}}.jpg" height="42" width="42">{{ post.Player }} <sub> {{post.Score}} </sub> </li>
-    {% endfor %}
-    </ul>
     
+    <div class="page-container" >
+        <div class="container" style="width:100%;height:30%;border: 1px solid black;">  
+            <ul style="width: 120em;margin-top: 5px;margin-bottom: 5px">
+            
+                {% for player in team_players %}
+                {% static "images/" as baseUrl %}
+                <li style="float:left;width: 25em;"><img id="replace_img" src="{{ baseUrl }}/{{player.Team}}.jpg" height="42" width="42">{{ player.Player }} <sub> {{player.Score}} </sub> </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="container" style="width:100%;height:70%;overflow: hidden;"> 
+
+        <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">MY TEAM</h5>
+                {% for i in myteam %}
+                    <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
+                    <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>      
+                {% endfor %} 
+        </div>
+
+        <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">EXPERTS</h5>
+                {% for i in experts %}
+                    <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
+                    <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
+                {% endfor %}             
+        </div>
+
+        <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">TEAM'S I LIKE</h5>
+                {% for i in teams %}
+                    <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
+                    <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
+                {% endfor %}                 
+        </div>
+        <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">PLAYER'S I LIKE</h5>
+                {% for i in players %}
+                    <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
+                    <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
+                {% endfor %}              
+        </div>
+    </div>
     </body>
 </html>
