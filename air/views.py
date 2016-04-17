@@ -234,7 +234,7 @@ def suggestor(request):
 	decoded_json_content = json.loads(content.decode())
 	pos=decoded_json_content['response']['docs'][0]['Position']
 
-	request_params = urllib.urlencode({'q':"Position:"+pos[0],'fl':'Player Team','wt': 'json', 'indent': 'true','rows':'1000'})
+	request_params = urllib.urlencode({'q':"Position:"+pos[0],'fl':'Player Team Injured','wt': 'json', 'indent': 'true','rows':'1000'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	print req
 	content = req.read()
@@ -243,7 +243,8 @@ def suggestor(request):
 	players=[]
 	for i in range(0,numing-1):
 		tm=decoded_json_content_later['response']['docs'][i]['Team']
-		if tm != "FreeAgent" and tm != "NDL":
+		inj=decoded_json_content_later['response']['docs'][i]['Injured']
+		if tm != "FreeAgent" and tm != "NDL" and inj[0]!=True:
 			query2='team:'+"\""+tm+"\""
 			request_params3 = urllib.urlencode({'q':query2,'wt': 'json', 'indent': 'true','rows':500})
 			req3 = urllib2.urlopen('http://52.37.29.91:8983/solr/matches/select',request_params3)
