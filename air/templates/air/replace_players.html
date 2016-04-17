@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<html>
+    <head>
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+        <style>
+            div.background {
+                background: url('{% static 'images/Background.jpg' %}');
+                background-size: contain;
+                border: 2px solid black;
+                opacity:0.5;
+            }
+            div.hilight {
+                 position: absolute;
+                 color: Black;
+                 top: 0px;
+                 left:41%;
+                 z-index: 1;
+            }
+        </style>
+        <title>REPLACE PLAYER</title>
+    </head>
+
+    <body>
+        <div class="background">
+            <h1 align="center";>_</h1> 
+        </div>
+
+        <div class="hilight">
+            <h1 align="center";>REPLACE PLAYER</h1>
+        </div>    
+    
+        <div class="page-container" >
+
+            <ul style="margin: 0; padding: 0;margin-top: 5px;margin-bottom: 5px">
+            
+                {% for key,val in team_players %}
+                {% static "images/" as baseUrl %}
+                <li style="float:left;"><img id="replace_img" src="{{ baseUrl }}/{{val}}.jpg" height="42" width="42">{{key}} </li><br><br><br>
+                {% endfor %}
+            </ul>
+        </div>
+    </body>
+</html>

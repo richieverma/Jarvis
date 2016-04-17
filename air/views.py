@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from datetime import datetime, date
 import urllib
 import urllib2
 import json
+from collections import OrderedDict
 from screenNames import map_screen_name
 from playerBias import map_playerBias
 from teamBias import map_teamBias
@@ -30,7 +32,6 @@ def check_login(request):
 
 def display_dashboard(username, request):
 	#username = request.GET['username']
-	#username = request
 	query_string = 'username:\"'+username+'\"'
 	request_params = urllib.urlencode({'q':query_string,'fl':'team','wt': 'json', 'indent': 'true'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
@@ -301,10 +302,79 @@ def suggest_ranking(request,players,username):
 
 	return render(request, 'air/suggestor.html', {})
 
+def replace_players(request):
+	injured_players = []
+	no_match_team = []
+	now = datetime.now()
+
+	username = request.GET['usr']
+	query_string1 = 'username:\"'+username+'\"'
+	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
+	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
+	content1 = req1.read()
+	decoded_json_content1 = json.loads(content1.decode('utf-8'))
+	team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	
+	query_string2 = ''
+	for p in team_players: 
+		query_string2 += 'Player:\"'+p+'\" '
+
+	request_params2 = urllib.urlencode({'q':query_string2,'fl':'Player Team Score Injured','wt': 'json', 'indent': 'true', 'rows':100})
+	req2 = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params2)
+	
+	content2 = req2.read()
+	decoded_json_content2 = json.loads(content2.decode('utf-8'))
+	json_response2 = decoded_json_content2["response"]
+	feed_data2 = json_response2["docs"]
+	feed_data2 = fix_unicode(feed_data2)
+	
+	player_team_dict = {}
+	team_player_dict = {}
+	player_score_dict = {}
+	final_dict = OrderedDict()
+
+	query_string3 = ''
+	for f in feed_data2:
+		player_team_dict[f['Team']] = f['Player']
+		team_player_dict[f['Player']] = f['Team']
+		player_score_dict[f['Player']] = f['Score']
+		
+		if (f['Injured'][0] == True):
+			injured_players.append(f['Player'])
+			final_dict[f['Player']] = f['Team']
+
+		query_string3 += 'team:\"'+f['Team']+'\" '
+
+	player_score_dict = OrderedDict(sorted(player_score_dict.items(), key=lambda t: t[1]))
+
+	request_params3 = urllib.urlencode({'q':query_string3,'wt': 'json', 'indent': 'true','rows':100})
+	req3 = urllib2.urlopen('http://52.37.29.91:8983/solr/matches/select',request_params3)
+	
+	content3 = req3.read()
+	decoded_json_content3 = json.loads(content3.decode('utf-8'))
+	json_response3 = decoded_json_content3["response"]
+	feed_data3 = json_response3["docs"]
+	feed_data3 = fix_unicode(feed_data3)		
+	#print feed_data3
+	team_match_dict = {}
+	for f in feed_data3:
+		team_match_dict[f['team']] = f['date']
+		match_date = datetime.strptime(f['date'], "%Y-%m-%dT%H:%M:%SZ")
+		diff = (match_date-now).days
+		if (diff > 7):
+			no_match_team.append(f['team'])
+			for f2 in feed_data2:
+				if ((f2['Team'] == f['team']) and (f2['Player'] not in final_dict)):
+					final_dict[f2['Player']] = f2['Team']
 
 
+	for key,val in player_score_dict.iteritems():
+		if ((key not in final_dict)):
+			final_dict[key] = team_player_dict[key]		
 
+	#final_json = json.dumps(final_dict)
 
-
-
-
+	context = {"team_players":final_dict.iteritems()}
+	print context
+	print final_dict
+	return render(request, 'air/replace_players.html', context)
