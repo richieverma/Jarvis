@@ -34,9 +34,9 @@
 
             <ul style="margin: 0; padding: 0;margin-top: 5px;margin-bottom: 5px">
             
-                {% for key,val in team_players %}
+                {% for player,team, score, reason in team_players %}
                 {% static "images/" as baseUrl %}
-                <li style="float:left;"><img id="replace_img" src="{{ baseUrl }}/{{val}}.jpg" height="42" width="42">{{key}} </li><br><br><br>
+                <li style="float:left;"><img id="replace_img" src="{{ baseUrl }}/{{team}}.jpg" height="42" width="42"><a href="/check_players?usr={{username}}&player={{player}}">{{player}}</a><sub>{{score}}</sub>   {{reason}} </li><br><br><br>
                 {% endfor %}
             </ul>
         </div>

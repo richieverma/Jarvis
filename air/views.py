@@ -30,7 +30,7 @@ def check_login(request):
 
         else:
             print "fail"
-	    return render(request, 'air/suggestor.html', {})
+            return render(request, 'air/login.html', {})
 
 def display_dashboard(username, request):
 	#username = request.GET['username']
@@ -63,16 +63,21 @@ def display_dashboard(username, request):
 	context_tweets_players = display_dashboard_tweets_players(username)
 	context_tweets_teams = display_dashboard_tweets_teams(username)
 
-	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players}
+	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players,"username":username}
 
 	return render(request, 'air/display_dashboard.html', context)	    
 
 def display_dashboard_tweets_myteam(team_players):
 	query_string = ''
 	for p in team_players: 
-		if query_string == '':
-			query_string = 'tweet_type:1 AND ('
-		query_string += 'screen_name:\"'+map_screen_name[p]+'\" '
+		try:
+			if query_string == '':
+				query_string = 'tweet_type:1 AND ('
+			if (p in map_screen_name):
+				query_string += 'screen_name:\"'+map_screen_name[p]+'\" '
+		except:
+			pass
+
 
 	if query_string == '':
 		return ''
@@ -93,11 +98,15 @@ def display_dashboard_tweets_myteam(team_players):
 def display_dashboard_tweets_experts(team_players):
 	query_string = ''
 	for p in team_players: 
-		if query_string == '':
-			query_string = 'tweet_type:3 AND ('
-		team = team_players[p]
-		query_string += 'text:\"'+map_screen_name[p]+'\" '
-		query_string += 'text:\"'+team+'\" '
+		try:
+			if query_string == '':
+				query_string = 'tweet_type:3 AND ('
+			team = team_players[p]
+			query_string += 'text:\"'+team+'\" '
+			if (p in map_screen_name):
+				query_string += 'text:\"'+map_screen_name[p]+'\" '
+		except:
+			pass
 
 		for n in p.split():
 			query_string += 'text:\"'+n+'\" '
@@ -133,9 +142,10 @@ def display_dashboard_tweets_players(username):
 		if ((data in map_playerBias) and (bias >=4)):
 			if player_query == '':
 				player_query = 'tweet_type:1 AND ('
-			player_query += 'screen_name:\"'+map_screen_name[map_playerBias[data]]+'\" '
+			if (map_playerBias[data] in map_screen_name):
+				player_query += 'screen_name:\"'+map_screen_name[map_playerBias[data]]+'\" '
 
-	#print player_query
+	print player_query
 	if player_query=='':
 		return ""
 	
@@ -167,7 +177,8 @@ def display_dashboard_tweets_teams(username):
 		if ((data in map_teamBias) and (bias >=4)):
 			if team_query == '':
 				team_query = 'tweet_type:2 AND ('
-			team_query += 'screen_name:\"'+map_screen_name[map_teamBias[data]]+'\" '
+			if (map_teamBias[data] in map_screen_name):
+				team_query += 'screen_name:\"'+map_screen_name[map_teamBias[data]]+'\" '
 	
 	if team_query=='':
 		return ""
@@ -215,7 +226,7 @@ def suggestor(request):
 	decoded_json_content = json.loads(content.decode())
 	players_inTeam=decoded_json_content['response']['docs'][0]['team']
 
-	request_params = urllib.urlencode({'q':"Player:\""+player+"\"",'fl':'Position','wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':"Player:"+player,'fl':'Position','wt': 'json', 'indent': 'true'})
 	print request_params
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	print req
@@ -261,14 +272,14 @@ def suggest_ranking(request,players,username):
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		num_pos = float(decoded_json_content['response']['numFound'])
-		print num_pos
+		#print num_pos
 
 		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:\"-1\"','fl':'id','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		num_neg = float(decoded_json_content['response']['numFound'])
-		print num_neg
+		#print num_neg
 
 		request_params = urllib.urlencode({'q':'text:\"'+player+"\"",'fl':'id','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
@@ -279,11 +290,11 @@ def suggest_ranking(request,players,username):
 			score=sa_wt*(num_pos/num_tot)
 		else:
 			score=0.0
-		print score
+		#print score
 
 		if num_neg>0.0:
 			score=score-(sa_wt*(num_neg/num_tot))
-		print score
+		#print score
 		pla_temp=player.replace(" ","")
 		pla_temp=pla_temp.replace(".","")
 		pla_temp=pla_temp.replace("'","")
@@ -297,7 +308,7 @@ def suggest_ranking(request,players,username):
 
 		if bias>0.0:
 			score= score + (25.0 * (bias/5.0))
-		print score
+		#print score
 
 
 		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score','wt': 'json', 'indent': 'true'})
@@ -307,7 +318,7 @@ def suggest_ranking(request,players,username):
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
 		score=score + (50 * (stat_score/100))
 
-		print score
+		#print score
 		d[player]= score
 		#full_thing.append(d)
 	listname = []
@@ -322,6 +333,10 @@ def suggest_ranking(request,players,username):
 def replace_players(request):
 	injured_players = []
 	no_match_team = []
+	final_player = []
+	final_team = []
+	final_score = []
+	reason = []
 	now = datetime.now()
 
 	username = request.GET['usr']
@@ -359,6 +374,10 @@ def replace_players(request):
 		if (f['Injured'][0] == True):
 			injured_players.append(f['Player'])
 			final_dict[f['Player']] = f['Team']
+			final_player.append(f['Player'])
+			final_team.append(f['Team'])
+			final_score.append(player_score_dict[f['Player']])
+			reason.append("Injured")
 
 		query_string3 += 'team:\"'+f['Team']+'\" '
 
@@ -383,15 +402,24 @@ def replace_players(request):
 			for f2 in feed_data2:
 				if ((f2['Team'] == f['team']) and (f2['Player'] not in final_dict)):
 					final_dict[f2['Player']] = f2['Team']
+					final_player.append(f['Player'])
+					final_team.append(f['Team'])
+					final_score.append(player_score_dict[f['Player']])					
+					reason.append("No Matches in the next 7 days")
 
 
 	for key,val in player_score_dict.iteritems():
 		if ((key not in final_dict)):
-			final_dict[key] = team_player_dict[key]		
+			final_dict[key] = team_player_dict[key]	
+			final_player.append(key)
+			final_team.append(team_player_dict[key])
+			final_score.append(player_score_dict[key])				
+			reason.append("")
 
 	#final_json = json.dumps(final_dict)
 
-	context = {"team_players":final_dict.iteritems()}
+	#context = {"team_players":final_dict.iteritems()}
+	context = {"team_players":zip(final_player,final_team, final_score, reason),"username":username}
 	print context
 	print final_dict
 	return render(request, 'air/replace_players.html', context)
@@ -400,19 +428,20 @@ def deletePlayer(request):
 	player="\""+request.GET['player']+"\""
 	global tobeDel
 	global userTobeDel
-	del_p="\""+tobeDel+"\""
+	del_p=tobeDel
 	ub=userTobeDel
 	#query_string = "username:\""+userTobeDel+"\""
-	my_data='[{"username":"'+ub+'","team":{"add":'+player+'}}]'
+	my_data='[{"username":'+ub+',"team":{"add":'+player+'}}]'
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
 	#print req.get_full_url()
 	f = urllib2.urlopen(req)
 	print(f)
-	my_data='[{"username":"'+userTobeDel+'","team":{"remove":'+del_p+'}}]'
+	my_data='[{"username":'+userTobeDel+',"team":{"remove":'+del_p+'}}]'
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
 	#print req.get_full_url()
 	f = urllib2.urlopen(req)
 	print(f)
-	return display_dashboard(userTobeDel,request)
+	ub=ub.replace("\"","")
+	return display_dashboard(ub,request)

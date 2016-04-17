@@ -17,6 +17,15 @@
                  left:41%;
                  z-index: 1;
             }
+            div.button {
+                 position: absolute;
+                 color: Black;
+                 top: 38px;
+                 left:90%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            }            
         </style>
         <title>DASHBOARD</title>
     </head>
@@ -25,7 +34,9 @@
     <div class="background">
         <h1 align="center";>_</h1> 
     </div>
-
+    <div class="button">
+            <button style="border:5px solid black; background-color: transparent;" onclick="window.location='/replace_players?usr={{username}}'"><strong>CHANGE TEAM</strong></button>
+    </div>  
     <div class="hilight">
         <h1 align="center";>DASHBOARD</h1>
     </div>    
