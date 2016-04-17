@@ -10,6 +10,8 @@ from teamBias import map_teamBias
 from collections import defaultdict
 
 # Create your views here.
+tobeDel=''
+userTobeDel=''
 
 def login(request):
     return render(request, 'air/login.html', {})
@@ -196,10 +198,15 @@ def fix_unicode(data):
     return data	
 
 def suggestor(request):
-	#player=request.GET['player']
-	#username=request.GET['usr']
-	player="Aaron Brooks"
-	username="test"
+	player="\""+request.GET['player']+"\""
+	username="\""+request.GET['usr']+"\""
+	#player="Aaron Brooks"
+	#username="test"
+	global tobeDel
+	tobeDel=player
+	global userTobeDel
+	userTobeDel=username
+	now = datetime.now()
 	request_params = urllib.urlencode({'q':"username:"+username,'fl':'team','wt': 'json', 'indent': 'true'})
 	print request_params
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
@@ -216,15 +223,25 @@ def suggestor(request):
 	decoded_json_content = json.loads(content.decode())
 	pos=decoded_json_content['response']['docs'][0]['Position']
 
-	request_params = urllib.urlencode({'q':"Position:"+pos[0],'fl':'Player','wt': 'json', 'indent': 'true','rows':'1000'})
+	request_params = urllib.urlencode({'q':"Position:"+pos[0],'fl':'Player Team','wt': 'json', 'indent': 'true','rows':'1000'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	print req
 	content = req.read()
-	decoded_json_content = json.loads(content.decode())
-	numing=decoded_json_content['response']['numFound']
+	decoded_json_content_later = json.loads(content.decode())
+	numing=decoded_json_content_later['response']['numFound']
 	players=[]
 	for i in range(0,numing-1):
-		players.append(decoded_json_content['response']['docs'][i]['Player'])
+		tm=decoded_json_content_later['response']['docs'][i]['Team']
+		if tm != "FreeAgent" and tm != "NDL":
+			query2='team:'+"\""+tm+"\""
+			request_params3 = urllib.urlencode({'q':query2,'wt': 'json', 'indent': 'true','rows':500})
+			req3 = urllib2.urlopen('http://52.37.29.91:8983/solr/matches/select',request_params3)
+			content3 = req3.read()
+			decoded_json_content = json.loads(content3.decode())
+			match_date = datetime.strptime(decoded_json_content['response']['docs'][0]['date'], "%Y-%m-%dT%H:%M:%SZ")
+			diff = (match_date-now).days
+			if (diff <= 7):
+				players.append(decoded_json_content_later['response']['docs'][i]['Player'])
 
 	for player in players:
 		if player in players_inTeam:
@@ -378,3 +395,24 @@ def replace_players(request):
 	print context
 	print final_dict
 	return render(request, 'air/replace_players.html', context)
+
+def deletePlayer(request):
+	player="\""+request.GET['player']+"\""
+	global tobeDel
+	global userTobeDel
+	del_p="\""+tobeDel+"\""
+	ub=userTobeDel
+	#query_string = "username:\""+userTobeDel+"\""
+	my_data='[{"username":"'+ub+'","team":{"add":'+player+'}}]'
+	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
+	req.add_header('Content-type', 'application/json')
+	#print req.get_full_url()
+	f = urllib2.urlopen(req)
+	print(f)
+	my_data='[{"username":"'+userTobeDel+'","team":{"remove":'+del_p+'}}]'
+	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
+	req.add_header('Content-type', 'application/json')
+	#print req.get_full_url()
+	f = urllib2.urlopen(req)
+	print(f)
+	return display_dashboard(userTobeDel,request)
