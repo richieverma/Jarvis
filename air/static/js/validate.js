@@ -4,8 +4,6 @@ function validate(){
 var username = document.getElementById("inputEmail").value;
 var password = document.getElementById("inputPassword").value;
 
-alert("Login1");
-
 window.open("/check_login?usr="+username+"&pass="+password);
 
 return false;

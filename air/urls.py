@@ -19,4 +19,5 @@ urlpatterns = [
     url(r'^check_login','air.views.check_login'),
     url(r'^$', 'air.views.login'),
     url(r'dashboard', views.display_dashboard, name='display_dashboard'),
+    url(r'check_players', views.suggestor, name='suggestor'),
 ]
