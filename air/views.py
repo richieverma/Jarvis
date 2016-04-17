@@ -266,6 +266,7 @@ def suggestor(request):
 def suggest_ranking(request,players,username):
 	full_thing=[]
 	d=defaultdict(float)
+	d_stat=defaultdict(float)
 	for player in players:
 		sa_wt= 25.0
 		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
@@ -311,16 +312,18 @@ def suggest_ranking(request,players,username):
 			score= score + (25.0 * (bias/5.0))
 		#print score
 
-
+		score_only_stat=0.0
 		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
-		score=score + (50 * (stat_score/100))
+		score=score + (50.0 * (stat_score/100.0))
+		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
 		d[player]= score
+		d_stat[player]=score_only_stat
 		#full_thing.append(d)
 	listname = []
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
@@ -328,6 +331,13 @@ def suggest_ranking(request,players,username):
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
+
+	listname2 = []
+	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+		diction= {"Player":key, "Score":value}
+		listname2.append(diction)
+	with open('air/static/js/data3.json', 'wb') as outfile:
+		json.dump(listname2,outfile)
 
 	return render(request, 'air/suggestor.html', {})
 
