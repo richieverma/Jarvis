@@ -65,7 +65,7 @@ def display_dashboard(username, request):
 	context_tweets_teams = display_dashboard_tweets_teams(username)
 	context_next_match = display_dashboard_next_match(player_team_dict)
 
-	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players,"username":username, "match":context_next_match}
+	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players,"teams":context_tweets_teams,"username":username, "match":context_next_match}
 
 	return render(request, 'air/display_dashboard.html', context)	    
 
@@ -147,7 +147,7 @@ def display_dashboard_tweets_players(username):
 			if (map_playerBias[data] in map_screen_name):
 				player_query += 'screen_name:\"'+map_screen_name[map_playerBias[data]]+'\" '
 
-	print player_query
+	#print player_query
 	if player_query=='':
 		return ""
 	
@@ -197,7 +197,7 @@ def display_dashboard_tweets_teams(username):
 	json_response = decoded_json_content["response"]
 	feed_data = json_response["docs"]
 	feed_data = fix_unicode(feed_data)
-
+	
 	return feed_data
 
 def display_dashboard_next_match(player_team_dict):
@@ -222,18 +222,15 @@ def display_dashboard_next_match(player_team_dict):
 	feed_data = json_response["docs"]
 	feed_data = fix_unicode(feed_data)	
 	#print feed_data
-	print type(feed_data)
 
 	for feed in feed_data:
-		print feed
+		#print feed
 		team_matchTime_dict[feed['team']] = feed['date']
 		match_date = datetime.strptime(feed_data[0]['date'], "%Y-%m-%dT%H:%M:%SZ")
 		diff = (match_date-now)
 		if (diff.total_seconds() < minDiff and diff.total_seconds() > 0 and feed['team'] in teams):
-			print "----------------LESS---------"
 			minTime = feed_data[0]['date']
 			minDate = match_date
-			print minTime
 			minDiff = diff.total_seconds()
 
 
@@ -241,7 +238,7 @@ def display_dashboard_next_match(player_team_dict):
 		if val == minTime:
 			final_matchTime.append(key)
 	final_matchTime.append(minDate.strftime("%A %d %B %Y %H:%M"))
-	print final_matchTime
+	#print final_matchTime
 	return final_matchTime
 
 
