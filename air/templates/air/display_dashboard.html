@@ -90,14 +90,14 @@
         </div>
 
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">TEAM'S I LIKE</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">TEAMS I LIKE</h5>
                 {% for i in teams %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                 {% endfor %}                 
         </div>
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">PLAYER'S I LIKE</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">PLAYERS I LIKE</h5>
                 {% for i in players %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
