@@ -448,19 +448,24 @@ def replace_players(request):
 	feed_data3 = fix_unicode(feed_data3)		
 	#print feed_data3
 	team_match_dict = {}
+
 	for f in feed_data3:
 		team_match_dict[f['team']] = f['date']
 		match_date = datetime.strptime(f['date'], "%Y-%m-%dT%H:%M:%SZ")
 		diff = (match_date-now).days
-		if (diff > 7):
+		#print "--------TOTAL"
+		diff_seconds = (match_date-now).total_seconds()
+		if (diff > 7 or diff_seconds < 0):
 			no_match_team.append(f['team'])
 			for f2 in feed_data2:
 				if ((f2['Team'] == f['team']) and (f2['Player'] not in final_dict)):
 					final_dict[f2['Player']] = f2['Team']
-					final_player.append(f['Player'])
-					final_team.append(f['Team'])
-					final_score.append(player_score_dict[f['Player']])					
+					final_player.append(f2['Player'])
+					final_team.append(f2['Team'])
+					final_score.append(player_score_dict[f2['Player']])					
 					reason.append("No Matches in the next 7 days")
+					print("No Matches in the next 7 days")
+					
 
 
 	for key,val in player_score_dict.iteritems():
