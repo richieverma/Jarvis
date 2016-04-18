@@ -141,7 +141,7 @@ def display_dashboard_tweets_players(username):
 	player_query = ''
 	for data in feed_data[0]:
 		bias = feed_data[0][data]
-		if ((data in map_playerBias) and (bias >=4)):
+		if ((data in map_playerBias) and (bias ==4)):
 			if player_query == '':
 				player_query = 'tweet_type:1 AND ('
 			if (map_playerBias[data] in map_screen_name):
