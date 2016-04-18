@@ -3,6 +3,7 @@ from datetime import datetime, date
 import urllib
 import urllib2
 import json
+import sys
 from collections import OrderedDict
 from screenNames import map_screen_name
 from playerBias import map_playerBias
@@ -62,8 +63,9 @@ def display_dashboard(username, request):
 	context_tweets_experts = display_dashboard_tweets_experts(player_team_dict)
 	context_tweets_players = display_dashboard_tweets_players(username)
 	context_tweets_teams = display_dashboard_tweets_teams(username)
+	context_next_match = display_dashboard_next_match(player_team_dict)
 
-	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players,"username":username}
+	context = {"team_players": feed_data, "myteam":context_tweets_myteam, "experts":context_tweets_experts, "players":context_tweets_players,"username":username, "match":context_next_match}
 
 	return render(request, 'air/display_dashboard.html', context)	    
 
@@ -196,7 +198,52 @@ def display_dashboard_tweets_teams(username):
 	feed_data = json_response["docs"]
 	feed_data = fix_unicode(feed_data)
 
-	return feed_data			
+	return feed_data
+
+def display_dashboard_next_match(player_team_dict):
+	teams = []
+	now = datetime.now()
+	team_matchTime_dict = {}
+	minDiff = sys.maxint
+	minTime = ""
+	minDate = datetime.now()
+	final_matchTime = []
+
+	for key,val in player_team_dict.iteritems():
+		if val not in teams:
+			teams.append(val)
+
+	query_string = '*:*'
+	request_params = urllib.urlencode({'q':query_string,'wt': 'json', 'indent': 'true','rows':50})
+	req = urllib2.urlopen('http://52.37.29.91:8983/solr/matches/select',request_params)
+	content = req.read()
+	decoded_json_content = json.loads(content.decode('utf-8'))
+	json_response = decoded_json_content["response"]
+	feed_data = json_response["docs"]
+	feed_data = fix_unicode(feed_data)	
+	#print feed_data
+	print type(feed_data)
+
+	for feed in feed_data:
+		print feed
+		team_matchTime_dict[feed['team']] = feed['date']
+		match_date = datetime.strptime(feed_data[0]['date'], "%Y-%m-%dT%H:%M:%SZ")
+		diff = (match_date-now)
+		if (diff.total_seconds() < minDiff and diff.total_seconds() > 0 and feed['team'] in teams):
+			print "----------------LESS---------"
+			minTime = feed_data[0]['date']
+			minDate = match_date
+			print minTime
+			minDiff = diff.total_seconds()
+
+
+	for key,val in team_matchTime_dict.iteritems():
+		if val == minTime:
+			final_matchTime.append(key)
+	final_matchTime.append(minDate.strftime("%A %d %B %Y %H:%M"))
+	print final_matchTime
+	return final_matchTime
+
 
 def fix_unicode(data):
     if isinstance(data, unicode):
