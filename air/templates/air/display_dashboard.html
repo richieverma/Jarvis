@@ -42,16 +42,6 @@
 
     <body>
 
-    <!-- 2. Include script -->
-    <script type="text/javascript">(function () {
-            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
-                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-                var h = d[g]('body')[0];h.appendChild(s); }})();
-    </script>
-
     <div class="background">
         <h1 align="center";>_</h1> 
     </div>
@@ -62,7 +52,7 @@
         <h1 align="center";>DASHBOARD</h1>
     </div> 
 
-    <div class="match" style="border:5px solid;width:350px;">
+    <div class="match" style="border:5px solid;display: inline-block">
         {% static "images/" as baseUrl %}
         <img id="replace_img" src="{{ baseUrl }}/{{match.0}}.jpg" height="42" width="42">
         <font size="4"><strong>{{ match.2 }}</strong></font>
@@ -71,11 +61,11 @@
     
     <div class="page-container" >
         <div class="container" style="width:100%;height:30%;border: 1px solid black;">  
-            <ul style="width: 95em;margin: 0; padding: 0;margin-top: 5px;margin-bottom: 5px">
+            <ul style="width: 100%;margin: 0; padding: 0;margin-top: 5px;margin-bottom: 5px">
             
                 {% for player in team_players %}
                 {% static "images/" as baseUrl %}
-                <li style="float:left;width: 23em;margin: 0; padding: 0;"><img id="replace_img" src="{{ baseUrl }}/{{player.Team}}.jpg" height="42" width="42">{{ player.Player }} <sub> {{player.Score}} </sub> </li>
+                <li style="float:left;width: 25%;margin: 0; padding: 0;display: inline-block;"><img id="replace_img" src="{{ baseUrl }}/{{player.Team}}.jpg" height="42" width="42">{{ player.Player }} <sub> {{player.Score}} </sub> </li>
                 {% endfor %}
             </ul>
         </div>
