@@ -25,7 +25,8 @@ def check_login(request):
         if decoded_json_content['response']['numFound'] > 0:
             pas1 = decoded_json_content['response']['docs'][0]['password']
             if pas1 == request.GET['pass']:
-                return display_dashboard(request.GET['usr'],request)
+                #return display_dashboard(request.GET['usr'],request)
+                return display_dashboard(request)
             else:
                 return render(request, 'air/login.html', {})
 
@@ -33,8 +34,8 @@ def check_login(request):
             print "fail"
             return render(request, 'air/login.html', {})
 
-def display_dashboard(username, request):
-	#username = request.GET['username']
+def display_dashboard(request):
+	username = request.GET['usr']
 	query_string = 'username:\"'+username+'\"'
 	request_params = urllib.urlencode({'q':query_string,'fl':'team','wt': 'json', 'indent': 'true'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
@@ -513,4 +514,4 @@ def deletePlayer(request):
 	f = urllib2.urlopen(req)
 	print(f)
 	ub=ub.replace("\"","")
-	return display_dashboard(ub,request)
+	return display_dashboard(request)

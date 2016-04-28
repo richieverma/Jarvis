@@ -17,6 +17,24 @@
                  left:41%;
                  z-index: 1;
             }
+            div.dashbutton {
+                 position: absolute;
+                 color: Black;
+                 top: 38px;
+                 left:0%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            } 
+            div.logoutbutton {
+                 position: absolute;
+                 color: Black;
+                 top: 38px;
+                 right:0%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            } 
         </style>
         <title>REPLACE PLAYER</title>
     </head>
@@ -25,6 +43,14 @@
         <div class="background">
             <h1 align="center";>_</h1> 
         </div>
+
+        <div class="dashbutton">
+                <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/display_dashboard?usr={{username}}'"><strong>DASHBOARD</strong></button>
+        </div>  
+
+        <div class="logoutbutton">
+                <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/'"><strong>LOGOUT</strong></button>
+        </div> 
 
         <div class="hilight">
             <h1 align="center";>REPLACE PLAYER</h1>
