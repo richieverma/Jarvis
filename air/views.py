@@ -487,17 +487,25 @@ def replace_players(request):
 
 def deletePlayer(request):
 	player="\""+request.GET['player']+"\""
+	play=request.GET['player']
 	global tobeDel
 	global userTobeDel
 	del_p=tobeDel
 	ub=userTobeDel
 	#query_string = "username:\""+userTobeDel+"\""
-	my_data='[{"username":'+ub+',"team":{"add":'+player+'}}]'
-	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
-	req.add_header('Content-type', 'application/json')
-	#print req.get_full_url()
-	f = urllib2.urlopen(req)
-	print(f)
+	query_string1 = 'username:'+userTobeDel
+	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
+	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
+	content1 = req1.read()
+	decoded_json_content1 = json.loads(content1.decode('utf-8'))
+	team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	if play not in team_players:
+		my_data='[{"username":'+ub+',"team":{"add":'+player+'}}]'
+		req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
+		req.add_header('Content-type', 'application/json')
+		#print req.get_full_url()
+		f = urllib2.urlopen(req)
+		print(f)
 	my_data='[{"username":'+userTobeDel+',"team":{"remove":'+del_p+'}}]'
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
