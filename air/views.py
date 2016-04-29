@@ -313,6 +313,7 @@ def suggest_ranking(request,players,username):
 	full_thing=[]
 	d=defaultdict(float)
 	d_stat=defaultdict(float)
+	d_team={}
 	for player in players:
 		sa_wt= 25.0
 		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
@@ -359,28 +360,30 @@ def suggest_ranking(request,players,username):
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
+		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
 		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
 		d[player]= score
 		d_stat[player]=score_only_stat
+		d_team[player]=team
 		#full_thing.append(d)
 	listname = []
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
-		diction= {"Player":key, "Score":value}
+		diction= {"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
 
 	listname2 = []
 	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
-		diction= {"Player":key, "Score":value}
+		diction= {"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)

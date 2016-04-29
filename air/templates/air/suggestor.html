@@ -30,6 +30,7 @@
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
+        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
         <th data-field="Player">Player</th>
         <th data-field="Score">Combined Score</th>
     </tr>
@@ -42,7 +43,7 @@
    </div>
 <div class="col-xs-6">
           <h2 class="sub-header">Statistical Suggestions</h2>
-	<div id="toolbar">
+	<div id="toolbar2">
             <button id="button2" class="btn btn-default">Replace</button>
         </div>
           <div class="table-responsive">
@@ -50,6 +51,7 @@
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
+        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
         <th data-field="Player">Player</th>
         <th data-field="Score">Statistical Score</th>
     </tr>
@@ -60,6 +62,13 @@
       </div>
     </div>
    </div>
+    <script>
+
+    function imageFormatter(value, row) {
+      return '<img src="'+value+'" height="42" width="42" />';
+    }
+</script>
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
