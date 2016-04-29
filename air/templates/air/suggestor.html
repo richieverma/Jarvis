@@ -22,17 +22,16 @@
   <body>
 	<div class="col-xs-6">
           <h2 class="sub-header">Combined Metrics Suggestions</h2>
-	<div id="toolbar">
-            <button id="button" class="btn btn-default">Replace</button>
-        </div>
+
           <div class="table-responsive">
-            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true">
+            <button id="button" class="btn btn-default">Replace</button>
+            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true">
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
         <th data-field="team_url" data-formatter="imageFormatter">Team</th>
         <th data-field="Player">Player</th>
-        <th data-field="Score">Combined Score</th>
+        <th data-field="Score" data-sortable="true">Combined Score</th>
     </tr>
     </thead>
 </table>
@@ -43,17 +42,42 @@
    </div>
 <div class="col-xs-6">
           <h2 class="sub-header">Statistical Suggestions</h2>
-	<div id="toolbar2">
-            <button id="button2" class="btn btn-default">Replace</button>
-        </div>
+
           <div class="table-responsive">
-            <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true">
+            <button id="button2" class="btn btn-default">Replace</button>
+            <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true">
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
         <th data-field="team_url" data-formatter="imageFormatter">Team</th>
         <th data-field="Player">Player</th>
-        <th data-field="Score">Statistical Score</th>
+        <th data-field="Score" data-sortable="true">Statistical Score</th>
+    </tr>
+    </thead>
+</table>
+          </div>
+        </div>
+      </div>
+    </div>
+   </div>
+    <div class="col-xs-12">
+          <h2 class="sub-header">Risky Suggestions</h2>
+
+          <div class="table-responsive">
+            <button id="button3" class="btn btn-default">Replace</button>
+            <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+    <thead>
+    <tr>
+        <th data-field="State" data-checkbox="true"></th>
+        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
+        <th data-field="Player">Player</th>
+        <th data-field="SScore" data-sortable="true">Statistical Score</th>
+        <th data-field="CScore" data-sortable="true">Combined Score</th>
+        <th data-field="Injured" data-formatter="imageFormatter">Injured</th>
+        <th data-field="Injured_type" >Injury Type</th>
+        <th data-field="Match" data-formatter="imageFormatter">Match</th>
+        <th data-field="Info" data-formatter="imFormatter">Information</th>
+
     </tr>
     </thead>
 </table>
@@ -64,6 +88,9 @@
    </div>
     <script>
 
+    function imFormatter(value, row) {
+      return "<a href='"+value+"'>Info </a>";
+    }
     function imageFormatter(value, row) {
       return '<img src="'+value+'" height="42" width="42" />';
     }
