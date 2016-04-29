@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import urllib
 import urllib2
 import json
@@ -240,6 +240,10 @@ def display_dashboard_next_match(player_team_dict):
 		if val == minTime:
 			final_matchTime.append(key)
 	final_matchTime.append(minDate.strftime("%A %d %B %Y %H:%M"))
+	#YYYY-MM-DD hh24:mm:ss
+	final_matchTime.append(minDate.strftime("%Y-%m-%d %H:%M:%S"))
+	match_end_time = minDate + timedelta(hours=1)
+	final_matchTime.append(match_end_time.strftime("%Y-%m-%d %H:%M:%S"))
 	#print final_matchTime
 	return final_matchTime
 
@@ -623,8 +627,8 @@ def replace_players(request):
 					final_player.append(f2['Player'])
 					final_team.append(f2['Team'])
 					final_score.append(player_score_dict[f2['Player']])					
-					reason.append("No Matches in the next 7 days")
-					print("No Matches in the next 7 days")
+					reason.append("Match")
+					#print("No Matches in the next 7 days")
 					
 
 
@@ -634,7 +638,7 @@ def replace_players(request):
 			final_player.append(key)
 			final_team.append(team_player_dict[key])
 			final_score.append(player_score_dict[key])				
-			reason.append("")
+			reason.append("Score")
 
 	#final_json = json.dumps(final_dict)
 

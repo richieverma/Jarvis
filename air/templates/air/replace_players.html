@@ -29,6 +29,15 @@
             div.logoutbutton {
                  position: absolute;
                  color: Black;
+                 top: 0px;
+                 right:0%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            }             
+            div.addplayerbutton {
+                 position: absolute;
+                 color: Black;
                  top: 38px;
                  right:0%;
                  z-index: 1;
@@ -36,6 +45,9 @@
                 background-repeat:no-repeat;
             } 
         </style>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
         <title>REPLACE PLAYER</title>
     </head>
 
@@ -52,19 +64,46 @@
                 <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/'"><strong>LOGOUT</strong></button>
         </div> 
 
+        <div class="addplayerbutton">
+                <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/'"><strong>ADD PLAYER</strong></button>
+        </div>
+
         <div class="hilight">
             <h1 align="center";>REPLACE PLAYER</h1>
         </div>    
     
-        <div class="page-container" >
+        <div class="table-responsive">
 
-            <ul style="margin: 0; padding: 0;margin-top: 5px;margin-bottom: 5px">
-            
+
+            <table class="table">
+            <tbody>
                 {% for player,team, score, reason in team_players %}
-                {% static "images/" as baseUrl %}
-                <li style="float:left;"><img id="replace_img" src="{{ baseUrl }}/{{team}}.jpg" height="42" width="42"><a href="/check_players?usr={{username}}&player={{player}}">{{player}}</a><sub>{{score}}</sub>   {{reason}} </li><br><br><br>
+                {% static "images/" as baseUrl %}    
+                <tr>
+                    <td style="width:50px"><img id="replace_img" src="{{ baseUrl }}/{{team}}.jpg" height="42" width="42"></td>
+                    <td style="width:250px"><a href="/check_players?usr={{username}}&player={{player}}">{{player}}</a><sub>{{score}}</sub></td>
+                    <td style="width:50px">
+                        {% ifequal reason "Match" %}
+                        <img src="{{ baseUrl }}NBA{{reason}}.jpg" height="22" title = "No Matches in the next 7 days"width="22">
+                        {% endifequal %}
+
+                        {% ifequal reason "Injured" %}
+                        <img src="{{ baseUrl }}NBA{{reason}}.jpg" height="42" title = "Player Injured"width="42">
+                        {% endifequal %}
+                    </td>
+                    <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap;">
+                        {% ifequal reason "Match" %}
+                        No Matches in the next 7 days
+                        {% endifequal %}
+
+                        {% ifequal reason "Injured" %}
+                        INJURED INFO URL
+                        {% endifequal %}
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
+            </tbody>
+            </table>
         </div>
     </body>
 </html>

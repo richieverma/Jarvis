@@ -1,9 +1,11 @@
 {% load staticfiles %}
 <html>
     <head>
+        <link rel="stylesheet" href="http://addtocalendar.com/atc/1.5/atc-style-button-icon">
+        <link rel="stylesheet" href="http://addtocalendar.com/atc/1.5/atc-style-blue.css">
     	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 		<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="http://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
+        
         <style>
             div.background {
                 background: url('{% static 'images/Background.jpg' %}');
@@ -56,6 +58,17 @@
 
     <body>
 
+    <!-- 2. Include script -->
+    <script type="text/javascript">(function () {
+            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
+                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+                var h = d[g]('body')[0];h.appendChild(s); }})();
+    </script>
+
+
     <div class="background">
         <h1 align="center";>_</h1> 
     </div>
@@ -71,12 +84,34 @@
         <h1 align="center";><a style="color: Black" onclick="window.location='/display_dashboard?usr={{username}}'">DASHBOARD</a></h1>
     </div> 
 
-    <div class="match" style="border:5px solid;display: inline-block">
+
+    <div class="match">
+    <div style="border:5px solid;display: inline-block">
         {% static "images/" as baseUrl %}
         <img id="replace_img" src="{{ baseUrl }}/{{match.0}}.jpg" height="42" width="42">
         <font size="4"><strong>{{ match.2 }}</strong></font>
         <img id="replace_img" src="{{ baseUrl }}/{{match.1}}.jpg" height="42" width="42">        
     </div>
+                        <!-- 3. Place event data -->
+    <span class="addtocalendar atc-style-button-icon atc-style-menu-wb">
+    {% static "images/" as baseUrl %}
+        <a class="atcb-link">
+            <img src="{{ baseUrl }}cal_icon.jpg" height="42" width="42" title="Add to Calendar">
+        </a>
+        <var class="atc_event">
+            <var class="atc_date_start">{{match.3}}</var>
+            <var class="atc_date_end">{{match.4}}</var>
+            <var class="atc_timezone">America/New_York</var>
+            <var class="atc_title">{{match.0}} vs {{match.1}}</var>
+            <var class="atc_description">{{match.0}} vs {{match.1}}</var>
+            <var class="atc_location">USA</var>
+            <var class="atc_organizer">NBA</var>
+            <var class="atc_organizer_email">nba@nba.com</var>
+        </var>
+    </span>
+    </div>
+
+
     
     <div class="page-container" >
         <div class="container" style="width:100%;height:30%;border: 1px solid black;">  
