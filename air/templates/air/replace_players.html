@@ -93,12 +93,15 @@
                     </td>
                     <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap;">
                         {% ifequal reason "Match" %}
-                        No Matches in the next 7 days
+                        No Matches in the next 7 days  <a href="http://www.nba.com/gameline">Schedule</a>
                         {% endifequal %}
 
                         {% ifequal reason "Injured" %}
                         INJURED INFO URL
                         {% endifequal %}
+                    </td>
+                    <td>
+                        <img src="{{ baseUrl }}Delete.jpg" height="22" title = "Remove player from team"width="22" onclick="window.location='/deleteSelectedPlayer?usr={{username}}&deleteSelectedPlayer={{player}}'">
                     </td>
                 </tr>
                 {% endfor %}

@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'redirectToDash', views.deletePlayer, name='deletePlayer'),
     url(r'redirectToAddPlayer', views.addPlayerTeam, name='addPlayerTeam'),
     url(r'add_player', views.suggestor_addPlayer, name='suggestor_addPlayer'),
+    url(r'deleteSelectedPlayer', views.deleteSelectedPlayer, name='deleteSelectedPlayer'),
 ]

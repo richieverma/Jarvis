@@ -11,8 +11,6 @@ from teamBias import map_teamBias
 from collections import defaultdict
 
 # Create your views here.
-tobeDel=''
-userTobeDel=''
 
 def login(request):
     return render(request, 'air/login.html', {})
@@ -47,7 +45,7 @@ def display_dashboard(request):
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
 
-	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','wt': 'json', 'indent': 'true','rows':50})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	
 	content = req.read()
@@ -71,8 +69,9 @@ def display_dashboard(request):
 	return render(request, 'air/display_dashboard.html', context)	
 
 def redirect_dashboard(request):
-	global userTobeDel
-	username = userTobeDel
+	#global userTobeDel
+	#username = userTobeDel
+	username = request.GET['usr']
 	username=username.replace("\"","")
 	query_string = 'username:\"'+username+'\"'
 	request_params = urllib.urlencode({'q':query_string,'fl':'team','wt': 'json', 'indent': 'true'})
@@ -85,7 +84,7 @@ def redirect_dashboard(request):
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
 
-	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','wt': 'json', 'indent': 'true','rows':50})
 	print request_params
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	
@@ -128,7 +127,7 @@ def display_dashboard_tweets_myteam(team_players):
 	
 	#print(query_string)
 
-	request_params = urllib.urlencode({'q':query_string,'sort':'created_at desc','wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'sort':'created_at desc','wt': 'json', 'indent': 'true','rows':30})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
 	content = req.read()
 	decoded_json_content = json.loads(content.decode('utf-8'))
@@ -159,7 +158,7 @@ def display_dashboard_tweets_experts(team_players):
 	
 	#print(query_string)
 
-	request_params = urllib.urlencode({'q':query_string,'sort':'created_at desc','wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'sort':'created_at desc','wt': 'json', 'indent': 'true','rows':30})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
 	content = req.read()
 	decoded_json_content = json.loads(content.decode('utf-8'))
@@ -170,7 +169,7 @@ def display_dashboard_tweets_experts(team_players):
 
 def display_dashboard_tweets_players(username):
 	query_string = 'username:\"'+username+"\""
-	request_params = urllib.urlencode({'q':query_string,'wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'wt': 'json', 'indent': 'true','rows':30})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
 	content = req.read()
 	decoded_json_content = json.loads(content.decode('utf-8'))
@@ -187,7 +186,7 @@ def display_dashboard_tweets_players(username):
 			if (map_playerBias[data] in map_screen_name):
 				player_query += 'screen_name:\"'+map_screen_name[map_playerBias[data]]+'\" '
 
-	#print player_query
+	print player_query
 	if player_query=='':
 		return ""
 	
@@ -205,7 +204,7 @@ def display_dashboard_tweets_players(username):
 
 def display_dashboard_tweets_teams(username):
 	query_string = 'username:\"'+username+"\""
-	request_params = urllib.urlencode({'q':query_string,'wt': 'json', 'indent': 'true'})
+	request_params = urllib.urlencode({'q':query_string,'wt': 'json', 'indent': 'true','rows':30})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
 	content = req.read()
 	decoded_json_content = json.loads(content.decode('utf-8'))
@@ -302,10 +301,7 @@ def suggestor(request):
 	username="\""+request.GET['usr']+"\""
 	#player="Aaron Brooks"
 	#username="test"
-	global tobeDel
-	tobeDel=player
-	global userTobeDel
-	userTobeDel=username
+	playertobeDel=request.GET['player']
 	now = datetime.now()
 	request_params = urllib.urlencode({'q':"username:"+username,'fl':'team','wt': 'json', 'indent': 'true'})
 	print request_params
@@ -356,14 +352,12 @@ def suggestor(request):
 		if player in players_inTeam:
 			players.remove(player)
 
-	return suggest_ranking(request,players,players_injured,players_nomatch,username)
+	return suggest_ranking(request, players, players_injured, players_nomatch, username, playertobeDel)
 
 def suggestor_addPlayer(request):
 	username="\""+request.GET['usr']+"\""
 	#player="Aaron Brooks"
 	#username="test"
-	global userTobeDel
-	userTobeDel=username
 	now = datetime.now()
 	request_params = urllib.urlencode({'q':"username:"+username,'fl':'team','wt': 'json', 'indent': 'true'})
 	print request_params
@@ -405,7 +399,7 @@ def suggestor_addPlayer(request):
 	for player in players:
 		if player in players_inTeam:
 			players.remove(player)
-
+	print players
 	return suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,username)
 
 
@@ -489,15 +483,16 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)
 
-	return render(request, 'air/addPlayer.html', {})
+	username = username.replace("\"","")
+	context = {"username":username}
+	return render(request, 'air/addPlayer.html', context)
 
 def addPlayerTeam(request):
 	player="\""+request.GET['player']+"\""
 	play=request.GET['player']
-	global userTobeDel
-	ub=userTobeDel
+	ub="\""+request.GET['usr']+"\""
 	#query_string = "username:\""+userTobeDel+"\""
-	query_string1 = 'username:'+userTobeDel
+	query_string1 = 'username:'+ub
 	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
 	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
 	content1 = req1.read()
@@ -513,7 +508,7 @@ def addPlayerTeam(request):
 	return redirect_dashboard(request)
 
 
-def suggest_ranking_inj(players_injured,players_nomatch,username):
+def suggest_ranking_inj(players_injured, players_nomatch, username):
 	full_thing=[]
 	d=defaultdict(float)
 	d1=defaultdict(float)
@@ -661,7 +656,7 @@ def suggest_ranking_inj(players_injured,players_nomatch,username):
 
 
 
-def suggest_ranking(request,players,players_injured,players_nomatch,username):
+def suggest_ranking(request, players, players_injured, players_nomatch, username, playertobeDel):
 	full_thing=[]
 	d=defaultdict(float)
 	d_stat=defaultdict(float)
@@ -741,7 +736,9 @@ def suggest_ranking(request,players,players_injured,players_nomatch,username):
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)
 
-	return render(request, 'air/suggestor.html', {})
+	username = username.replace("\"","")
+	context = {"username":username,"playertobeDel":playertobeDel}
+	return render(request, 'air/suggestor.html', context)
 
 def replace_players(request):
 	injured_players = []
@@ -845,17 +842,16 @@ def replace_players(request):
 def deletePlayer(request):
 	player="\""+request.GET['player']+"\""
 	play=request.GET['player']
-	global tobeDel
-	global userTobeDel
-	del_p=tobeDel
-	ub=userTobeDel
+	del_p="\""+request.GET['playertobeDel']+"\""
+	ub="\""+request.GET['usr']+"\""
 	#query_string = "username:\""+userTobeDel+"\""
-	query_string1 = 'username:'+userTobeDel
+	query_string1 = 'username:'+ub
 	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
 	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
 	content1 = req1.read()
 	decoded_json_content1 = json.loads(content1.decode('utf-8'))
 	team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	print team_players
 	if play not in team_players:
 		my_data='[{"username":'+ub+',"team":{"add":'+player+'}}]'
 		req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
@@ -863,11 +859,32 @@ def deletePlayer(request):
 		#print req.get_full_url()
 		f = urllib2.urlopen(req)
 		print(f)
-	my_data='[{"username":'+userTobeDel+',"team":{"remove":'+del_p+'}}]'
+	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'}}]'
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
 	#print req.get_full_url()
 	f = urllib2.urlopen(req)
 	print(f)
 	ub=ub.replace("\"","")
+	return redirect_dashboard(request)
+
+def deleteSelectedPlayer(request):
+	del_p="\""+request.GET['deleteSelectedPlayer']+"\""
+	ub="\""+request.GET['usr']+"\""
+	#query_string = "username:\""+userTobeDel+"\""
+	query_string1 = 'username:'+ub
+	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
+	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
+	content1 = req1.read()
+	decoded_json_content1 = json.loads(content1.decode('utf-8'))
+	team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	print team_players
+	print del_p
+	
+	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'}}]'
+	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
+	req.add_header('Content-type', 'application/json')
+	#print req.get_full_url()
+	f = urllib2.urlopen(req)
+	print(f)
 	return redirect_dashboard(request)

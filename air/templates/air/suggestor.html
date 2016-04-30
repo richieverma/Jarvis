@@ -24,7 +24,7 @@
           <h2 class="sub-header">Combined Metrics Suggestions</h2>
 
           <div class="table-responsive">
-            <button id="button" class="btn btn-default">Replace</button>
+            <button id="button" class="btn btn-default" onclick="clickevent()">Replace</button>
             <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true">
     <thead>
     <tr>
@@ -44,7 +44,7 @@
           <h2 class="sub-header">Statistical Suggestions</h2>
 
           <div class="table-responsive">
-            <button id="button2" class="btn btn-default">Replace</button>
+            <button id="button2" class="btn btn-default" onclick="clickevent2()">Replace</button>
             <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true">
     <thead>
     <tr>
@@ -64,7 +64,7 @@
           <h2 class="sub-header">Risky Suggestions</h2>
 
           <div class="table-responsive">
-            <button id="button3" class="btn btn-default">Replace</button>
+            <button id="button3" class="btn btn-default" onclick="clickevent3()">Replace</button>
             <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true">
     <thead>
     <tr>
@@ -96,6 +96,47 @@
     }
 </script>
 
+<script>
+        function clickevent3() {
+            var $table = $('#table3');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}'
+            var JSONObj=$table.bootstrapTable('getSelections')
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
+
+<script>
+        function clickevent2() {
+            var $table = $('#table2');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}'
+            var JSONObj=$table.bootstrapTable('getSelections')
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
+
+<script>
+        function clickevent() {
+          var $table = $('#table');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}'
+            var JSONObj=$table.bootstrapTable('getSelections')
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
