@@ -77,12 +77,12 @@
 
             <table class="table">
             <tbody>
-                {% for player,team, score, reason in team_players %}
+                {% for player,team, score, reason, injured_url, position, salary in team_players %}
                 {% static "images/" as baseUrl %}    
                 <tr>
                     <td style="width:50px"><img id="replace_img" src="{{ baseUrl }}/{{team}}.jpg" height="42" width="42"></td>
-                    <td style="width:250px"><a href="/check_players?usr={{username}}&player={{player}}">{{player}}</a><sub>{{score}}</sub></td>
-                    <td style="width:50px">
+                    <td style="position: relative;"><a href="/check_players?usr={{username}}&player={{player}}" title="Replace Player">{{player}}</a><sub>{{score}}</sub> <br><font size="1">${{salary}}</font></td>
+                    <td style="position: relative;;">
                         {% ifequal reason "Match" %}
                         <img src="{{ baseUrl }}NBA{{reason}}.jpg" height="22" title = "No Matches in the next 7 days"width="22">
                         {% endifequal %}
@@ -91,16 +91,30 @@
                         <img src="{{ baseUrl }}NBA{{reason}}.jpg" height="42" title = "Player Injured"width="42">
                         {% endifequal %}
                     </td>
-                    <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap;">
+                    <td style="position: relative;">
+                        <font size="2">
+                        {% for pos in position %}
+                        {% ifequal pos "C" %}Center{% endifequal %}
+                        {% ifequal pos "PF" %}Power Forward{% endifequal %}
+                        {% ifequal pos "SF" %}Small Forward{% endifequal %}
+                        {% ifequal pos "SG" %}Shooting Guard{% endifequal %}
+                        {% ifequal pos "PG" %}Point Guard{% endifequal %}
+                        <br>
+                        {% endfor %}
+                        </font>
+                    </td>
+                    <td style="position: relative;;overflow: hidden; text-overflow: ellipsis;">
+                        <font size="2">
                         {% ifequal reason "Match" %}
-                        No Matches in the next 7 days  <a href="http://www.nba.com/gameline">Schedule</a>
+                        <a href="http://www.nba.com/gameline" title="Check Match Schedule">No Matches in the next 7 days</a>
                         {% endifequal %}
 
                         {% ifequal reason "Injured" %}
-                        INJURED INFO URL
+                        {{injured_url}}
                         {% endifequal %}
+                        </font>
                     </td>
-                    <td>
+                    <td style="position: relative;">
                         <img src="{{ baseUrl }}Delete.jpg" height="22" title = "Remove player from team"width="22" onclick="window.location='/deleteSelectedPlayer?usr={{username}}&deleteSelectedPlayer={{player}}'">
                     </td>
                 </tr>

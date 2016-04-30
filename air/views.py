@@ -45,7 +45,7 @@ def display_dashboard(request):
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
 
-	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','wt': 'json', 'indent': 'true','rows':50})
+	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','sort':'Score desc','wt': 'json', 'indent': 'true','rows':50})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	
 	content = req.read()
@@ -666,6 +666,9 @@ def replace_players(request):
 	final_team = []
 	final_score = []
 	reason = []
+	injured_url = []
+	position = []
+	salary = []
 	now = datetime.now()
 
 	username = request.GET['usr']
@@ -680,7 +683,7 @@ def replace_players(request):
 	for p in team_players: 
 		query_string2 += 'Player:\"'+p+'\" '
 
-	request_params2 = urllib.urlencode({'q':query_string2,'fl':'Player Team Score Injured','wt': 'json', 'indent': 'true', 'rows':100})
+	request_params2 = urllib.urlencode({'q':query_string2,'fl':'Player Team Score Injured injured_url Position salary','wt': 'json', 'indent': 'true', 'rows':100})
 	req2 = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params2)
 	
 	content2 = req2.read()
@@ -696,9 +699,14 @@ def replace_players(request):
 
 	query_string3 = ''
 	for f in feed_data2:
+		position.append(f['Position'])
 		player_team_dict[f['Team']] = f['Player']
 		team_player_dict[f['Player']] = f['Team']
 		player_score_dict[f['Player']] = f['Score']
+		try:
+			salary.append(f['salary'])
+		except:
+			salary.append(0.0)
 		
 		if (f['Injured'] != 0 ):
 			injured_players.append(f['Player'])
@@ -707,6 +715,7 @@ def replace_players(request):
 			final_team.append(f['Team'])
 			final_score.append(player_score_dict[f['Player']])
 			reason.append("Injured")
+			injured_url.append(f['injured_url'])
 
 		query_string3 += 'team:\"'+f['Team']+'\" '
 
@@ -738,6 +747,7 @@ def replace_players(request):
 					final_team.append(f2['Team'])
 					final_score.append(player_score_dict[f2['Player']])					
 					reason.append("Match")
+					injured_url.append("")
 					#print("No Matches in the next 7 days")
 					
 
@@ -749,11 +759,13 @@ def replace_players(request):
 			final_team.append(team_player_dict[key])
 			final_score.append(player_score_dict[key])				
 			reason.append("Score")
+			injured_url.append("")
+			
 
 	#final_json = json.dumps(final_dict)
 
 	#context = {"team_players":final_dict.iteritems()}
-	context = {"team_players":zip(final_player,final_team, final_score, reason),"username":username}
+	context = {"team_players":zip(final_player,final_team, final_score, reason, injured_url, position, salary),"username":username}
 	
 	#print final_dict
 	return render(request, 'air/replace_players.html', context)
