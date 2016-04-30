@@ -411,33 +411,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	d_team={}
 	for player in players:
 		sa_wt= 25.0
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_pos = float(decoded_json_content['response']['numFound'])
-		#print num_pos
 
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:\"-1\"','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_neg = float(decoded_json_content['response']['numFound'])
-		#print num_neg
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+"\"",'fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_tot = float(decoded_json_content['response']['numFound'])
-		if num_pos>0.0:
-			score=sa_wt*(num_pos/num_tot)
-		else:
-			score=0.0
-		#print score
-
-		if num_neg>0.0:
-			score=score-(sa_wt*(num_neg/num_tot))
 		#print score
 		pla_temp=player.replace(" ","")
 		pla_temp=pla_temp.replace(".","")
@@ -455,13 +429,15 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
+		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
+		score=score+sent_score
 		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
@@ -470,14 +446,14 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		d_team[player]=team
 		#full_thing.append(d)
 	listname = []
-	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+	for key, value in d.iteritems():
 		diction= {"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
 
 	listname2 = []
-	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+	for key, value in d_stat:
 		diction= {"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
@@ -515,35 +491,11 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 	d_stat=defaultdict(float)
 	d_team={}
 	d_nom={}
+	d_injtp={}
+	d_comm={}
 	for player in players_injured:
 		sa_wt= 25.0
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_pos = float(decoded_json_content['response']['numFound'])
-		#print num_pos
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:\"-1\"','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_neg = float(decoded_json_content['response']['numFound'])
-		#print num_neg
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+"\"",'fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_tot = float(decoded_json_content['response']['numFound'])
-		if num_pos>0.0:
-			score=sa_wt*(num_pos/num_tot)
-		else:
-			score=0.0
-		#print score
-
-		if num_neg>0.0:
-			score=score-(sa_wt*(num_neg/num_tot))
+		score=0.0
 		#print score
 		pla_temp=player.replace(" ","")
 		pla_temp=pla_temp.replace(".","")
@@ -561,19 +513,26 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team injured_url Injured','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
+		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
+		score=score+sent_score
 		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
 		d[player]= score
 		d_stat[player]=score_only_stat
 		d_team[player]=team
+		if decoded_json_content['response']['docs'][0]['Injured'] == 1:
+			d_injtp[player]="Game Time Decision"
+		else:
+			d_injtp[player]="OUT"
+		d_comm[player]=decoded_json_content['response']['docs'][0]['injured_url']
 
 		if player in players_nomatch:
 			d_nom[player]="NoMatch.jpg"
@@ -581,39 +540,13 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		else:
 			d_nom[player]="Match.png"
 	listname = []
-	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
-		diction= {"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[key],"Injured":"/static/images/NBAInjured.jpeg"}
+	for key, value in d.iteritems():
+		diction= {"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[key],"Injured":"/static/images/NBAInjured.jpeg","Injured_type":d_injtp[key],"Info":d_comm[key]}
 		listname.append(diction)
 
 	for player in players_nomatch:
 		sa_wt= 25.0
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_pos = float(decoded_json_content['response']['numFound'])
-		#print num_pos
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:\"-1\"','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_neg = float(decoded_json_content['response']['numFound'])
-		#print num_neg
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+"\"",'fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_tot = float(decoded_json_content['response']['numFound'])
-		if num_pos>0.0:
-			score=sa_wt*(num_pos/num_tot)
-		else:
-			score=0.0
-		#print score
-
-		if num_neg>0.0:
-			score=score-(sa_wt*(num_neg/num_tot))
+		score=0.0
 		#print score
 		pla_temp=player.replace(" ","")
 		pla_temp=pla_temp.replace(".","")
@@ -631,13 +564,14 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
+		score=score + sent_score
 		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
@@ -646,7 +580,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		d_team[player]=team
 
 		#full_thing.append(d)
-	for key, value in sorted(d1.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+	for key, value in d1.iteritems():
 		diction= {"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/NoMatch.jpg","Injured":"/static/images/NBANotInjured.jpg"}
 		listname.append(diction)
 	with open('air/static/js/data4.json', 'wb') as outfile:
@@ -664,33 +598,7 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	d_team={}
 	for player in players:
 		sa_wt= 25.0
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:1','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_pos = float(decoded_json_content['response']['numFound'])
-		#print num_pos
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+'\" AND tweet_score:\"-1\"','fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_neg = float(decoded_json_content['response']['numFound'])
-		#print num_neg
-
-		request_params = urllib.urlencode({'q':'text:\"'+player+"\"",'fl':'id','wt': 'json', 'indent': 'true'})
-		req = urllib2.urlopen('http://52.37.29.91:8983/solr/tweets/select',request_params)
-		content = req.read()
-		decoded_json_content = json.loads(content.decode())
-		num_tot = float(decoded_json_content['response']['numFound'])
-		if num_pos>0.0:
-			score=sa_wt*(num_pos/num_tot)
-		else:
-			score=0.0
-		#print score
-
-		if num_neg>0.0:
-			score=score-(sa_wt*(num_neg/num_tot))
+		score=0.0
 		#print score
 		pla_temp=player.replace(" ","")
 		pla_temp=pla_temp.replace(".","")
@@ -708,13 +616,15 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team sentiment','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
+		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
+		score=score + sent_score
 		score_only_stat=score_only_stat + (stat_score)
 
 		#print score
@@ -723,14 +633,14 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 		d_team[player]=team
 		#full_thing.append(d)
 	listname = []
-	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+	for key, value in d.iteritems():
 		diction= {"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
 
 	listname2 = []
-	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
+	for key, value in d_stat.iteritems():
 		diction= {"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
