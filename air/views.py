@@ -798,7 +798,7 @@ def deletePlayer(request):
 	ub="\""+request.GET['usr']+"\""
 	#query_string = "username:\""+userTobeDel+"\""
 	query_string1 = 'username:'+ub
-	request_params1 = urllib.urlencode({'q':query_string1,'fl':'team','wt': 'json', 'indent': 'true'})
+	request_params1 = urllib.urlencode({'q':query_string1,'wt': 'json', 'indent': 'true'})
 	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
 	content1 = req1.read()
 	decoded_json_content1 = json.loads(content1.decode('utf-8'))
@@ -818,7 +818,14 @@ def deletePlayer(request):
 		f = urllib2.urlopen(req)
 		#print(f)
 
-	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'},"'+map_biasPlayer[player]+'":{"set":'+ str(0.8*feed[map_biasPlayer[player]]) +'}}]'
+	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'},"'+map_biasPlayer[play]+'":{"set":'+ str(0.8*feed[map_biasPlayer[play]]) +'}'
+
+	#increase bias for the remaining players on team by 5%
+	for p in team_players:
+		if (p not in player):
+			my_data+=',"'+map_biasPlayer[p]+'":{"set":'+ str(1.05*feed[map_biasPlayer[p]]) +'}'
+	my_data+='}]'
+
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
 	#print req.get_full_url()
@@ -841,8 +848,13 @@ def deleteSelectedPlayer(request):
 	feed = fix_unicode(feed)
 	team_players = feed["team"]
 	
-	
-	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'},"'+map_biasPlayer[player]+'":{"set":'+ str(0.8*feed[map_biasPlayer[player]]) +'}}]'
+	my_data='[{"username":'+ub+',"team":{"remove":'+del_p+'},"'+map_biasPlayer[player]+'":{"set":'+ str(0.8*feed[map_biasPlayer[player]]) +'}'
+
+	#increase bias for the remaining players on team by 5%
+	for p in team_players:
+		if (p not in player):
+			my_data+=',"'+map_biasPlayer[p]+'":{"set":'+ str(1.05*feed[map_biasPlayer[p]]) +'}'
+	my_data+='}]'
 	req = urllib2.Request(url='http://52.37.29.91:8983/solr/userData/update/json?commit=true', data=my_data)
 	req.add_header('Content-type', 'application/json')
 	#print req.get_full_url()
