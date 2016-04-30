@@ -554,8 +554,10 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 			d_injtp[player]="Game Time Decision"
 		else:
 			d_injtp[player]="OUT"
-		d_comm[player]=decoded_json_content['response']['docs'][0]['injured_url']
-
+		try:
+			d_comm[player]=decoded_json_content['response']['docs'][0]['injured_url']
+		except:
+			d_comm[player]=""
 		if player in players_nomatch:
 			d_nom[player]="NoMatch.jpg"
 			players_nomatch.remove(player)
@@ -731,7 +733,10 @@ def replace_players(request):
 			final_team.append(f['Team'])
 			final_score.append(player_score_dict[f['Player']])
 			reason.append("Injured")
-			injured_url.append(f['injured_url'])
+			try:
+				injured_url.append(f['injured_url'])
+			except:
+				injured_url.append("")				
 
 		query_string3 += 'team:\"'+f['Team']+'\" '
 
