@@ -81,8 +81,8 @@
                 {% static "images/" as baseUrl %}    
                 <tr>
                     <td style="width:50px"><img id="replace_img" src="{{ baseUrl }}/{{team}}.jpg" height="42" width="42"></td>
-                    <td style="position: relative;"><a href="/check_players?usr={{username}}&player={{player}}" title="Replace Player">{{player}}</a><sub>{{score}}</sub> <br><font size="1">${{salary}}</font></td>
-                    <td style="position: relative;;">
+                    <td style="position: relative;max-width: 250px"><a href="/check_players?usr={{username}}&player={{player}}" title="Replace Player">{{player}}</a><sub>{{score}}</sub> <br><font size="1">${{salary}}</font></td>
+                    <td style="position: relative;max-width:50px ">
                         {% ifequal reason "Match" %}
                         <img src="{{ baseUrl }}NBA{{reason}}.jpg" height="22" title = "No Matches in the next 7 days"width="22">
                         {% endifequal %}
@@ -103,7 +103,7 @@
                         {% endfor %}
                         </font>
                     </td>
-                    <td style="position: relative;;overflow: hidden; text-overflow: ellipsis;">
+                    <td style="position: relative;;overflow: hidden; text-overflow: ellipsis;min-width:700px">
                         <font size="2">
                         {% ifequal reason "Match" %}
                         <a href="http://www.nba.com/gameline" title="Check Match Schedule">No Matches in the next 7 days</a>

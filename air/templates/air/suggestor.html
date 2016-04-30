@@ -57,10 +57,64 @@
         {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
       }
 </script>
+
+<style>
+  div.background {
+                position: absolute;
+                top: 0px;
+                width: 100%;
+                background: url('{% static 'images/Background.jpg' %}');
+                background-size: contain;
+                border: 2px solid black;
+                opacity:0.5;
+            }
+            div.hilight {
+                 position: absolute;
+                 color: Black;
+                 top: 0px;
+                 left:23%;
+                 z-index: 1;
+            }
+            div.dashbutton {
+                 position: absolute;
+                 color: Black;
+                 top: 38px;
+                 left:0%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            } 
+            div.logoutbutton {
+                 position: absolute;
+                 color: Black;
+                 top: 0px;
+                 right:0%;
+                 z-index: 1;
+                background-color: Transparent;
+                background-repeat:no-repeat;
+            }             
+  </style>
   </head>
 
 
     <body>
+        <div class="background">
+            <h1 align="center";>_</h1> 
+        </div>
+
+        <div class="dashbutton">
+                <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/display_dashboard?usr={{username}}'"><strong>DASHBOARD</strong></button>
+        </div>  
+
+        <div class="logoutbutton">
+                <button style="border:5px solid black; background-color: transparent;display: inline-block;" onclick="window.location='/'"><strong>LOGOUT</strong></button>
+        </div> 
+        <div class="hilight">
+            <h1 align="center";>PLAYER REPLACEMENT SUGGESTIONS</h1>
+        </div>    
+
+
+<br><br>
    <div class="col-xs-6">
           <h2 class="sub-header">Combined Metrics Suggestions</h2>
 
