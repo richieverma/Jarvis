@@ -411,6 +411,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	d_team={}
 	for player in players:
 		sa_wt= 25.0
+		score=0.0
 
 		#print score
 		pla_temp=player.replace(" ","")
@@ -453,7 +454,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		json.dump(listname,outfile)
 
 	listname2 = []
-	for key, value in d_stat:
+	for key, value in d_stat.iteritems():
 		diction= {"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg"}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:

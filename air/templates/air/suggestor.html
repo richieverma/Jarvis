@@ -16,16 +16,57 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script>
+        function clickevent3() {
+            var $table = $('#table3');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
+
+<script>
+        function clickevent2() {
+            var $table = $('#table2');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
+
+<script>
+        function clickevent() {
+          var $table = $('#table');
+            var uname = '{{ username}}';
+            var playertobeDel = '{{playertobeDel}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
+            if(JSONObj.length > 1)
+                {alert('getSelections: ' + 'Please select only one ');}
+            else
+        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
+        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
+      }
+</script>
   </head>
 
 
-  <body>
-	<div class="col-xs-6">
+    <body>
+   <div class="col-xs-6">
           <h2 class="sub-header">Combined Metrics Suggestions</h2>
 
           <div class="table-responsive">
             <button id="button" class="btn btn-default" onclick="clickevent()">Replace</button>
-            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true" data-sort-name="Score" data-sort-order="desc">
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
@@ -45,7 +86,7 @@
 
           <div class="table-responsive">
             <button id="button2" class="btn btn-default" onclick="clickevent2()">Replace</button>
-            <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+            <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true" data-sort-name="Score" data-sort-order="desc">
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
@@ -65,7 +106,7 @@
 
           <div class="table-responsive">
             <button id="button3" class="btn btn-default" onclick="clickevent3()">Replace</button>
-            <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+            <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true" data-sort-name="CScore" data-sort-order="desc">
     <thead>
     <tr>
         <th data-field="State" data-checkbox="true"></th>
@@ -76,7 +117,7 @@
         <th data-field="Injured" data-formatter="imageFormatter">Injured</th>
         <th data-field="Injured_type" >Injury Type</th>
         <th data-field="Match" data-formatter="imageFormatter">Match</th>
-        <th data-field="Info" data-formatter="imFormatter">Information</th>
+        <th data-field="Info">Information</th>
 
     </tr>
     </thead>
@@ -96,48 +137,6 @@
     }
 </script>
 
-<script>
-        function clickevent3() {
-            var $table = $('#table3');
-            var uname = '{{ username}}';
-            var playertobeDel = '{{playertobeDel}}'
-            var JSONObj=$table.bootstrapTable('getSelections')
-            if(JSONObj.length > 1)
-                {alert('getSelections: ' + 'Please select only one ');}
-            else
-        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
-      }
-</script>
-
-<script>
-        function clickevent2() {
-            var $table = $('#table2');
-            var uname = '{{ username}}';
-            var playertobeDel = '{{playertobeDel}}'
-            var JSONObj=$table.bootstrapTable('getSelections')
-            if(JSONObj.length > 1)
-                {alert('getSelections: ' + 'Please select only one ');}
-            else
-        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
-      }
-</script>
-
-<script>
-        function clickevent() {
-          var $table = $('#table');
-            var uname = '{{ username}}';
-            var playertobeDel = '{{playertobeDel}}'
-            var JSONObj=$table.bootstrapTable('getSelections')
-            if(JSONObj.length > 1)
-                {alert('getSelections: ' + 'Please select only one ');}
-            else
-        //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToDash?usr="+uname+"&playertobeDel="+playertobeDel+"&player="+JSONObj[0].Player,"_self");}
-      }
-</script>
-
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -152,7 +151,7 @@
 
 <!-- Latest compiled and minified Locales -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/locale/bootstrap-table-en-US.min.js"></script>
-    <script src="{% static 'js/sugg.js' %}"></script>
+
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">

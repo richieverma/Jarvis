@@ -16,124 +16,125 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  </head>
 
-
-  <body>
-	<div class="col-xs-6">
-          <h2 class="sub-header">Combined Metrics Suggestions</h2>
-
-          <div class="table-responsive">
-            <button id="button" class="btn btn-default" onclick="clickevent()">Add</button>
-            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true">
-    <thead>
-    <tr>
-        <th data-field="State" data-checkbox="true"></th>
-        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
-        <th data-field="Player">Player</th>
-        <th data-field="Score" data-sortable="true">Combined Score</th>
-    </tr>
-    </thead>
-</table>
-          </div>
-        </div>
-      </div>
-    </div>
-   </div>
-<div class="col-xs-6">
-          <h2 class="sub-header">Statistical Suggestions</h2>
-
-          <div class="table-responsive">
-            <button id="button2" class="btn btn-default" onclick="clickevent2()">Add</button>
-            <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true">
-    <thead>
-    <tr>
-        <th data-field="State" data-checkbox="true"></th>
-        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
-        <th data-field="Player">Player</th>
-        <th data-field="Score" data-sortable="true">Statistical Score</th>
-    </tr>
-    </thead>
-</table>
-          </div>
-        </div>
-      </div>
-    </div>
-   </div>
-    <div class="col-xs-12">
-          <h2 class="sub-header">Risky Suggestions</h2>
-
-          <div class="table-responsive">
-            <button id="button3" class="btn btn-default" onclick="clickevent3()">Add</button>
-            <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true">
-    <thead>
-    <tr>
-        <th data-field="State" data-checkbox="true"></th>
-        <th data-field="team_url" data-formatter="imageFormatter">Team</th>
-        <th data-field="Player">Player</th>
-        <th data-field="SScore" data-sortable="true">Statistical Score</th>
-        <th data-field="CScore" data-sortable="true">Combined Score</th>
-        <th data-field="Injured" data-formatter="imageFormatter">Injured</th>
-        <th data-field="Injured_type" >Injury Type</th>
-        <th data-field="Match" data-formatter="imageFormatter">Match</th>
-        <th data-field="Info" data-formatter="imFormatter">Information</th>
-
-    </tr>
-    </thead>
-</table>
-          </div>
-        </div>
-      </div>
-    </div>
-   </div>
     <script>
-
-    function imFormatter(value, row) {
-      return "<a href='"+value+"'>Info </a>";
-    }
-    function imageFormatter(value, row) {
-      return '<img src="'+value+'" height="42" width="42" />';
-    }
-</script>
-
-<script>
         function clickevent3() {
             var $table = $('#table3');
-            var uname = '{{username}}';
-            var JSONObj=$table.bootstrapTable('getSelections')
+            var uname = '{{ username}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
             if(JSONObj.length > 1)
                 {alert('getSelections: ' + 'Please select only one ');}
             else
         //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player"_self");}
+        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player,"_self");}
       }
 </script>
 
 <script>
         function clickevent2() {
             var $table = $('#table2');
-            var uname = '{{username}}';
-            var JSONObj=$table.bootstrapTable('getSelections')
+            var uname = '{{ username}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
             if(JSONObj.length > 1)
                 {alert('getSelections: ' + 'Please select only one ');}
             else
         //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player"_self");}
+        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player,"_self");}
       }
 </script>
 
 <script>
         function clickevent() {
           var $table = $('#table');
-            var uname = '{{username}}';
-            var JSONObj=$table.bootstrapTable('getSelections')
+            var uname = '{{ username}}';
+            var JSONObj=$table.bootstrapTable('getSelections');
             if(JSONObj.length > 1)
                 {alert('getSelections: ' + 'Please select only one ');}
             else
         //{alert('getSelections: ' + JSON.stringify(JSONObj[0].Player));}
-        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player"_self");}
+        {window.open("/redirectToAddPlayer?usr="+uname+"&player="+JSONObj[0].Player,"_self");}
       }
-</script>
+</script>    
+
+  </head>
+
+
+  <body>
+	<div class="col-xs-6">
+    <h2 class="sub-header">Combined Metrics Suggestions</h2>
+
+      <div class="table-responsive">
+        <button id="button" class="btn btn-default" onclick="clickevent()">Add</button>
+            <table id="table" data-toggle="table" data-url="/static/js/data2.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+              <thead>
+                <tr>
+                  <th data-field="State" data-checkbox="true"></th>
+                  <th data-field="team_url" data-formatter="imageFormatter">Team</th>
+                  <th data-field="Player">Player</th>
+                  <th data-field="Score" data-sortable="true">Combined Score</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+   </div>
+  <div class="col-xs-6">
+    <h2 class="sub-header">Statistical Suggestions</h2>
+
+      <div class="table-responsive">
+        <button id="button2" class="btn btn-default" onclick="clickevent2()">Add</button>
+          <table id="table2" data-toggle="table" data-url="/static/js/data3.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+            <thead>
+              <tr>
+                  <th data-field="State" data-checkbox="true"></th>
+                  <th data-field="team_url" data-formatter="imageFormatter">Team</th>
+                  <th data-field="Player">Player</th>
+                  <th data-field="Score" data-sortable="true">Statistical Score</th>
+              </tr>
+            </thead>
+          </table>
+          </div>
+        </div>
+      </div>
+    </div>
+   </div>
+  <div class="col-xs-12">
+    <h2 class="sub-header">Risky Suggestions</h2>
+
+      <div class="table-responsive">
+        <button id="button3" class="btn btn-default" onclick="clickevent3()">Add</button>
+          <table id="table3" data-toggle="table" data-url="/static/js/data4.json" data-click-to-select="true" data-pagination="true"  data-search="true">
+            <thead>
+              <tr>
+                  <th data-field="State" data-checkbox="true"></th>
+                  <th data-field="team_url" data-formatter="imageFormatter">Team</th>
+                  <th data-field="Player">Player</th>
+                  <th data-field="SScore" data-sortable="true">Statistical Score</th>
+                  <th data-field="CScore" data-sortable="true">Combined Score</th>
+                  <th data-field="Injured" data-formatter="imageFormatter">Injured</th>
+                  <th data-field="Injured_type" >Injury Type</th>
+                  <th data-field="Match" data-formatter="imageFormatter">Match</th>
+                  <th data-field="Info" data-formatter="imFormatter">Information</th>
+
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+    
+  <script>
+    function imFormatter(value, row) {
+      return "<a href='"+value+"'>Info </a>";
+    }
+    function imageFormatter(value, row) {
+      return '<img src="'+value+'" height="42" width="42" />';
+    }
+  </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
