@@ -445,7 +445,10 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
-		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		try:
+			sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		except:
+			sent_score=0
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
 		score=score+sent_score
@@ -534,7 +537,10 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
-		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		try:
+			sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		except:
+			sent_score = 0
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
 		score=score+sent_score
@@ -637,7 +643,10 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
-		sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		try:
+			sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+		except:
+			sent_score=0
 		team=decoded_json_content['response']['docs'][0]['Team']
 		score=score + (50.0 * (stat_score/100.0))
 		score=score + sent_score
