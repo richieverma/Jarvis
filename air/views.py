@@ -121,17 +121,19 @@ def redirect_dashboard(request):
 
 def display_dashboard_tweets_myteam(team_players):
 	query_string = ''
+	blank = 1
 	for p in team_players: 
 		try:
 			if query_string == '':
 				query_string = 'tweet_type:1 AND ('
 			if (p in map_screen_name):
+				blank = 0
 				query_string += 'screen_name:\"'+map_screen_name[p]+'\" '
 		except:
 			pass
 
 
-	if query_string == '':
+	if query_string == '' or blank ==1:
 		return ''
 			
 	query_string += ')'
@@ -149,6 +151,7 @@ def display_dashboard_tweets_myteam(team_players):
 
 def display_dashboard_tweets_experts(team_players):
 	query_string = ''
+	blank = 1
 	for p in team_players: 
 		try:
 			if query_string == '':
@@ -156,6 +159,7 @@ def display_dashboard_tweets_experts(team_players):
 			team = team_players[p]
 			query_string += 'text:\"'+team+'\" '
 			if (p in map_screen_name):
+				blank = 0
 				query_string += 'text:\"'+map_screen_name[p]+'\" '
 		except:
 			pass
@@ -163,7 +167,7 @@ def display_dashboard_tweets_experts(team_players):
 		for n in p.split():
 			query_string += 'text:\"'+n+'\" '
 
-	if query_string == '':
+	if query_string == '' or blank == 1:
 		return ''
 	query_string += ')'
 	
@@ -190,6 +194,7 @@ def display_dashboard_tweets_players(username, team_players):
 	feed_data = fix_unicode(feed_data)
 
 	player_query = ''
+	blank = 1
 
 	for data in feed_data[0]:
 		bias = feed_data[0][data]
@@ -197,10 +202,11 @@ def display_dashboard_tweets_players(username, team_players):
 			if player_query == '':
 				player_query = 'tweet_type:1 AND ('
 			if (map_playerBias[data] in map_screen_name):
+				blank = 0
 				player_query += 'screen_name:\"'+map_screen_name[map_playerBias[data]]+'\" '
 
 	#print player_query
-	if player_query=='':
+	if player_query=='' or blank ==1:
 		return ""
 	
 	player_query += ')'			
@@ -226,15 +232,17 @@ def display_dashboard_tweets_teams(username):
 	feed_data = fix_unicode(feed_data)
 
 	team_query = ''
+	blank = 1
 	for data in feed_data[0]:
 		bias = feed_data[0][data]
 		if ((data in map_teamBias) and (bias >=4)):
 			if team_query == '':
 				team_query = 'tweet_type:2 AND ('
 			if (map_teamBias[data] in map_screen_name):
+				blank = 0
 				team_query += 'screen_name:\"'+map_screen_name[map_teamBias[data]]+'\" '
 	
-	if team_query=='':
+	if team_query=='' or blank == 1:
 		return ""
 
 	team_query += ')'	
