@@ -557,6 +557,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		d[player]= score
 		d_stat[player]=score_only_stat
 		d_team[player]=team
+		d_injured[player]="NBAInjured.jpeg"
 		if decoded_json_content['response']['docs'][0]['Injured'] == 1:
 			d_injtp[player]="Game Time Decision"
 		else:
@@ -570,7 +571,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 			players_nomatch.remove(player)
 		else:
 			d_nom[player]="Match.png"
-			d_injured[player]="NBAInjured.jpeg"
+
 	listname = []
 	#count=0
 	#for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
@@ -621,12 +622,13 @@ def suggest_ranking_inj(players_injured, players_nomatch, username):
 		d_injured[player]="NBANotInjured.jpg"
 		d_nom[player]="NoMatch.jpg"
 		d_comm[player]=" "
+		d_injtp[player]=" "
 
 		#full_thing.append(d)
 	count=0
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[player],"Injured":"/static/images/"+d_injured[player]}
+		diction= {"Rank":count,"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[key],"Injured":"/static/images/"+d_injured[key],"Injured_type":d_injtp[key],"Info":d_comm[key]}
 		listname.append(diction)
 	with open('air/static/js/data4.json', 'wb') as outfile:
 		json.dump(listname,outfile)
