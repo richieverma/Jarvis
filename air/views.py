@@ -39,8 +39,12 @@ def display_dashboard(request):
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
 	content = req.read()
 	decoded_json_content = json.loads(content.decode('utf-8'))
-	team_players = decoded_json_content["response"]["docs"][0]["team"]
-	
+	#If a new user logs in, there is no team. Display blank dashboard
+	try:
+		team_players = decoded_json_content["response"]["docs"][0]["team"]
+	except:
+		return render(request, 'air/display_dashboard.html', {"username":username})	
+
 	query_string = ''
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
@@ -369,7 +373,12 @@ def suggestor_addPlayer(request):
 	#print req
 	content = req.read()
 	decoded_json_content = json.loads(content.decode())
-	players_inTeam=decoded_json_content['response']['docs'][0]['team']
+
+	#There will be no team for new user
+	try:
+		players_inTeam=decoded_json_content['response']['docs'][0]['team']
+	except:
+		players_inTeam=[]
 
 	request_params = urllib.urlencode({'q':"*:*",'fl':'Player Team Injured','wt': 'json', 'indent': 'true','rows':'1000'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
@@ -493,7 +502,12 @@ def addPlayerTeam(request):
 	content1 = req1.read()
 	decoded_json_content1 = json.loads(content1.decode('utf-8'))
 	feed = decoded_json_content1["response"]["docs"][0]
-	team_players = feed["team"]
+	#No team for new user
+	try:
+		team_players = feed["team"]
+	except:
+		team_players = []
+
 	if play not in team_players:
 		my_data='[{"username":'+ub+',"team":{"add":'+player+'}}]'
 		if (feed[map_biasPlayer[play]] < 5):
@@ -723,7 +737,14 @@ def replace_players(request):
 	req1 = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params1)
 	content1 = req1.read()
 	decoded_json_content1 = json.loads(content1.decode('utf-8'))
-	team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	
+
+	#If a new user logs in, there is no team. Display blank dashboard
+	try:
+		team_players = decoded_json_content1["response"]["docs"][0]["team"]
+	except:
+		return render(request, 'air/replace_players.html', {"username":username})	
+
 	
 	query_string2 = ''
 	for p in team_players: 

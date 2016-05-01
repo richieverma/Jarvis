@@ -87,7 +87,9 @@
     </div> 
 
 
+    {%if match %}
     <div class="match">
+
     <div style="border:5px solid;display: inline-block">
         {% static "images/" as baseUrl %}
         <img id="replace_img" src="{{ baseUrl }}{{match.0}}.jpg" height="42" width="42">
@@ -112,7 +114,7 @@
         </var>
     </span>
     </div>
-
+    {% endif %}
 
     
     <div class="page-container" >
