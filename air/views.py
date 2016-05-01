@@ -596,15 +596,27 @@ def addPlayerTeam(request):
 
 		#Change weights of sentiment, bias and stats for user based on selection for replacing player
 		if (tab_type=='S'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+float(0.5*(11-int(rank))))+'}'
+			if (int(rank)>10):
+				add_evalScore = 0.5
+			else:
+				add_evalScore = float(0.5*(11-int(rank)))
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
 			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']-0.5)+'},"stats":{"set":'+str(feed['stats']+1)+'}'
 		elif (tab_type=='R'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+float(0.5*(11-int(rank))))+'}'
+			if (int(rank)>10):
+				add_evalScore = 0.5
+			else:
+				add_evalScore = float(0.5*(11-int(rank)))			
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
 			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']+1)+'},"stats":{"set":'+str(feed['stats']-0.5)+'}'
 		elif (tab_type=='C'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+(11-float(rank)))+'}'
+			if (int(rank)>10):
+				add_evalScore = 1
+			else:
+				add_evalScore = float(11-int(rank))
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
 			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'
 			#Decrease bias of all players above this player in the list
 			with open('air/static/js/data2.json', 'r') as readjson:
@@ -988,16 +1000,33 @@ def deletePlayer(request):
 
 		#Change weights of sentiment, bias and stats for user based on selection for replacing player
 		if (tab_type=='S'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+float(0.5*(11 - int(rank))))+'}'
+			if (int(rank)>10):
+				add_evalScore = 0.5
+			else:
+				add_evalScore = float(0.5*(11-int(rank)))
+
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
 			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'			
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']-0.5)+'},"stats":{"set":'+str(feed['stats']+1)+'}'
+
 		elif (tab_type=='R'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+float(0.5*(11 - int(rank))))+'}'
+			if (int(rank)>10):
+				add_evalScore = 0.5
+			else:
+				add_evalScore = float(0.5*(11-int(rank)))
+
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
 			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'			
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']+1)+'},"stats":{"set":'+str(feed['stats']-0.5)+'}'
+
 		elif (tab_type=='C'):
-			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+(11-float(rank)))+'}'
-			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'			
+			if (int(rank)>10):
+				add_evalScore = 1
+			else:
+				add_evalScore = float(11-int(rank))
+			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
+			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'
+
 			#Decrease bias of all players above this player in the list
 			with open('air/static/js/data2.json', 'r') as readjson:
 				jdata = json.load(readjson)
