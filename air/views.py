@@ -807,14 +807,15 @@ def replace_players(request):
 	player_team_dict = {}
 	team_player_dict = {}
 	player_score_dict = {}
+	player_pos_dict = {}
 	final_dict = OrderedDict()
 
 	query_string3 = ''
 	for f in feed_data2:
-		position.append(f['Position'])
 		player_team_dict[f['Team']] = f['Player']
 		team_player_dict[f['Player']] = f['Team']
 		player_score_dict[f['Player']] = f['Score']
+		player_pos_dict[f['Player']] = f['Position']
 		try:
 			salary.append(f['salary'])
 		except:
@@ -876,7 +877,8 @@ def replace_players(request):
 			reason.append("Score")
 			injured_url.append("")
 			
-
+	for pl in final_player:
+		position.append(player_pos_dict[pl])
 	#final_json = json.dumps(final_dict)
 
 	#context = {"team_players":final_dict.iteritems()}
