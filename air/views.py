@@ -389,7 +389,19 @@ def suggestor(request):
 			#players.remove(player)
 			final_players.append(player)
 
-	return suggest_ranking(request, final_players, players_injured, players_nomatch, username, playertobeDel)
+	final_players_injured = []
+	for player_i in players_injured:
+		if player_i not in players_inTeam:
+			#players.remove(player)
+			final_players_injured.append(player_i)
+
+	final_players_nomatch = []
+	for player_nm in players_nomatch:
+		if player_nm not in players_inTeam:
+			#players.remove(player)
+			final_players_nomatch.append(player_nm)
+
+	return suggest_ranking(request, final_players, final_players_injured, final_players_nomatch, username, playertobeDel)
 
 def suggestor_addPlayer(request):
 	username="\""+request.GET['usr']+"\""
@@ -460,8 +472,20 @@ def suggestor_addPlayer(request):
 		if player not in players_inTeam:
 			#players.remove(player)
 			final_players.append(player)
+
+	final_players_injured = []
+	for player_i in players_injured:
+		if player_i not in players_inTeam:
+			#players.remove(player)
+			final_players_injured.append(player_i)
+			
+	final_players_nomatch = []
+	for player_nm in players_nomatch:
+		if player_nm not in players_inTeam:
+			#players.remove(player)
+			final_players_nomatch.append(player_nm)
 	
-	return suggest_ranking_addPlayer(request,final_players,players_injured,players_nomatch,username)
+	return suggest_ranking_addPlayer(request,final_players,final_players_injured,final_players_nomatch,username)
 
 
 def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,username):
