@@ -53,7 +53,7 @@ def display_dashboard(request):
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
 
-	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','sort':'Score desc','wt': 'json', 'indent': 'true','rows':50})
+	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team tweets_negative tweets_positive Injured','sort':'Score desc','wt': 'json', 'indent': 'true','rows':50})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	
 	content = req.read()
@@ -95,7 +95,7 @@ def redirect_dashboard(request):
 	for p in team_players: 
 		query_string += 'Player:\"'+p+'\" '
 
-	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team','sort':'Score desc','wt': 'json', 'indent': 'true','rows':50})
+	request_params = urllib.urlencode({'q':query_string,'fl':'Player Score Team tweets_negative tweets_positive Injured','sort':'Score desc','wt': 'json', 'indent': 'true','rows':50})
 	
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	
@@ -380,7 +380,10 @@ def suggestor(request):
 	decoded_json_content = json.loads(content.decode())
 	pos=decoded_json_content['response']['docs'][0]['Position']
 
-	request_params = urllib.urlencode({'q':"Position:"+pos[0]+"AND salary:[* TO "+str(money_left)+"]",'fl':'Player Team Injured','wt': 'json', 'indent': 'true','rows':'1000'})
+	pos_query = ''
+	for p in pos:
+		pos_query+='Position:'+ p + ' '
+	request_params = urllib.urlencode({'q':pos_query+"AND salary:[* TO "+str(money_left)+"]",'fl':'Player Team Injured','wt': 'json', 'indent': 'true','rows':'1000'})
 	req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 	#print req
 	content = req.read()

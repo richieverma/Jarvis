@@ -123,7 +123,23 @@
             
                 {% for player in team_players %}
                 {% static "images/" as baseUrl %}
-                <li style="float:left;width: 25%;margin: 0; padding: 0;display: inline-block;"><img id="replace_img" src="{{ baseUrl }}{{player.Team}}.jpg" height="42" width="42" title="{{player.Team}}">{{ player.Player }} <sub> {{player.Score}} </sub> </li>
+                <li style="float:left;width: 25%;margin: 0; padding: 0;display: inline-block;">
+                    <img style="float: left;" id="replace_img" src="{{ baseUrl }}{{player.Team}}.jpg" height="42" width="42" title="{{player.Team}}" vertical-align"text-bottom">  {{ player.Player }} <sub> {{player.Score}} </sub>
+
+                    {% if player.Injured != 0 %}
+                        <img src="{{ baseUrl }}trending_down.jpg" height="25" width="25" title="Player has a negative buzz" vertical-align"text-bottom">
+                    {% endif %}
+
+                    {% if player.Injured == 0 %}
+                        {% if player.tweets_positive >= player.tweets_negative %}
+                        <img src="{{ baseUrl }}trending_up.jpg" height="25" width="25" title="Player has a positive buzz" vertical-align"text-bottom">
+                        {% endif %}
+
+                        {% if player.tweets_negative >= player.tweets_positive %}
+                        <img src="{{ baseUrl }}trending_down.jpg" height="25" width="25" title="Player has a negative buzz" vertical-align"text-bottom">
+                        {% endif %}   
+                    {% endif %}                                    
+                </li>
                 {% endfor %}
             </ul>
         </div>
