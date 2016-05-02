@@ -282,18 +282,21 @@ def display_dashboard_next_match(player_team_dict):
 	feed_data = json_response["docs"]
 	feed_data = fix_unicode(feed_data)	
 	#print feed_data
-
+	flag = 0
 	for feed in feed_data:
 		#print feed
 		team_matchTime_dict[feed['team']] = feed['date']
 		match_date = datetime.strptime(feed['date'], "%Y-%m-%dT%H:%M:%SZ")
 		diff = (match_date-now)
 		if (diff.total_seconds() < minDiff and diff.total_seconds() > 0 and feed['team'] in teams):
+			flag = 1
 			minTime = feed['date']
 			minDate = match_date
 			minDiff = diff.total_seconds()
 			#print feed['date']
 
+	if (flag == 0):
+		return final_matchTime
 
 	for key,val in team_matchTime_dict.iteritems():
 		if val == minTime:
