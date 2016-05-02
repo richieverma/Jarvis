@@ -337,6 +337,7 @@ def suggestor(request):
 
 	tot_sal=0.0
 	player_score=0.0
+	player_score_stat=0.0
 	player_sal=0.0
 	for p_tm in players_inTeam:
 		request_params = urllib.urlencode({'q':"Player:\""+p_tm+'\"','fl':'salary sentiment Score','wt': 'json', 'indent': 'true'})
@@ -372,6 +373,7 @@ def suggestor(request):
 			if bias>0.0:
 				bias_score=(stat_score * (bias/25.0))
 			player_score=sent_score+bias_score
+			player_score_stat=stat_score
 
 	money_left=50000-tot_sal
 
@@ -433,7 +435,7 @@ def suggestor(request):
 			#players.remove(player)
 			final_players_nomatch.append(player_nm)
 
-	return suggest_ranking(request, final_players, final_players_injured, final_players_nomatch, username, playertobeDel,player,player_sal,player_score)
+	return suggest_ranking(request, final_players, final_players_injured, final_players_nomatch, username, playertobeDel,player,player_sal,player_score,player_score_stat)
 
 def suggestor_addPlayer(request):
 	username="\""+request.GET['usr']+"\""
@@ -838,7 +840,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 
 
 
-def suggest_ranking(request, players, players_injured, players_nomatch, username, playertobeDel,player_2b,player_2bsal,player_2bscore):
+def suggest_ranking(request, players, players_injured, players_nomatch, username, playertobeDel,player_2b,player_2bsal,player_2bscore,player_2bscore_stat):
 	full_thing=[]
 	d=defaultdict(float)
 	d_stat=defaultdict(float)
@@ -846,6 +848,7 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	d_team={}
 	d_sal={}
 	d_profit={}
+	d_profit_stat={}
 	d_pos={}
 	d_tpos={}
 	for player in players:
@@ -900,6 +903,10 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 			d_profit[player]="green.png"
 		else:
 			d_profit[player]="NBANotInjured.jpg"
+		if d_stat[player]>player_2bscore_stat and d_sal[player]<=player_2bsal:
+			d_profit_stat[player]="green.png"
+		else:
+			d_profit_stat[player]="NBANotInjured.jpg"
 		#full_thing.append(d)
 	listname = []
 	count=0
@@ -914,7 +921,7 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	count=0
 	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key],"Position":d_pos[key],"Sent":d_tpos[key]}
+		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit_stat[key],"Position":d_pos[key],"Sent":d_tpos[key]}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)
