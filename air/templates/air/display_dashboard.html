@@ -126,18 +126,12 @@
                 <li style="float:left;width: 25%;margin: 0; padding: 0;display: inline-block;">
                     <img style="float: left;" id="replace_img" src="{{ baseUrl }}{{player.Team}}.jpg" height="42" width="42" title="{{player.Team}}" vertical-align"text-bottom">  {{ player.Player }} <sub> {{player.Score}} </sub>
 
-                    {% if player.Injured != 0 %}
-                        <img src="{{ baseUrl }}trending_down.jpg" height="25" width="25" title="Player has a negative buzz" vertical-align"text-bottom">
+                    {% if player.tweets_positive >= 0.8 %}
+                    <img src="{{ baseUrl }}trending_up.jpg" height="25" width="25" title="Player has a positive buzz" vertical-align"text-bottom">
                     {% endif %}
 
-                    {% if player.Injured == 0 %}
-                        {% if player.tweets_positive >= player.tweets_negative %}
-                        <img src="{{ baseUrl }}trending_up.jpg" height="25" width="25" title="Player has a positive buzz" vertical-align"text-bottom">
-                        {% endif %}
-
-                        {% if player.tweets_negative >= player.tweets_positive %}
-                        <img src="{{ baseUrl }}trending_down.jpg" height="25" width="25" title="Player has a negative buzz" vertical-align"text-bottom">
-                        {% endif %}   
+                    {% if player.tweets_negative > 0.3 %}
+                    <img src="{{ baseUrl }}trending_down.jpg" height="25" width="25" title="Player has a negative buzz" vertical-align"text-bottom">
                     {% endif %}                                    
                 </li>
                 {% endfor %}
@@ -148,7 +142,7 @@
     <div class="container" style="width:100%;height:70%;overflow: hidden;"> 
 
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">MY TEAM</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players in my lineup">MY TEAM</h5>
                 {% for i in myteam %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>      
@@ -156,7 +150,7 @@
         </div>
 
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">EXPERTS</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="What experts are saying about players in my lineup and their corresponding teams">EXPERTS</h5>
                 {% for i in experts %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
@@ -164,14 +158,14 @@
         </div>
 
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">TEAMS I LIKE</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by teams I have shown interest in">TEAMS I LIKE</h5>
                 {% for i in teams %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                 {% endfor %}                 
         </div>
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
-            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42">PLAYERS I LIKE</h5>
+            <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players I have shown interest in">PLAYERS I LIKE</h5>
                 {% for i in players %}
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
