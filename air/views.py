@@ -964,6 +964,7 @@ def replace_players(request):
 	team_player_dict = {}
 	player_score_dict = {}
 	player_pos_dict = {}
+	player_sal_dict = {}
 	final_dict = OrderedDict()
 
 	query_string3 = ''
@@ -973,9 +974,9 @@ def replace_players(request):
 		player_score_dict[f['Player']] = f['Score']
 		player_pos_dict[f['Player']] = f['Position']
 		try:
-			salary.append(f['salary'])
+			player_sal_dict[f['Player']] = f['salary']
 		except:
-			salary.append(0.0)
+			player_sal_dict[f['Player']] = 0
 		
 		if (f['Injured'] != 0 ):
 			injured_players.append(f['Player'])
@@ -1035,6 +1036,8 @@ def replace_players(request):
 			
 	for pl in final_player:
 		position.append(player_pos_dict[pl])
+		salary.append(player_sal_dict[pl])
+
 	#final_json = json.dumps(final_dict)
 
 	#context = {"team_players":final_dict.iteritems()}

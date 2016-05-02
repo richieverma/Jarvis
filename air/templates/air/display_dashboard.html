@@ -70,7 +70,7 @@
                 var h = d[g]('body')[0];h.appendChild(s); }})();
     </script>
 
-    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>    
+      
 
 
     <div class="background">
@@ -152,7 +152,7 @@
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players in my lineup">MY TEAM</h5>
                 {% for i in myteam %}
-                <blockquote class="twitter-tweet">
+                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>      
                     </blockquote>
@@ -162,7 +162,7 @@
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="What experts are saying about players in my lineup and their corresponding teams">EXPERTS</h5>
                 {% for i in experts %}
-                <blockquote class="twitter-tweet">
+                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p> 
                     </blockquote> 
@@ -172,7 +172,7 @@
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by teams I have shown interest in">TEAMS I LIKE</h5>
                 {% for i in teams %}
-                <blockquote class="twitter-tweet">
+                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                     </blockquote>
@@ -181,7 +181,7 @@
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players I have shown interest in">PLAYERS I LIKE</h5>
                 {% for i in players %}
-                <blockquote class="twitter-tweet">
+                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                     </blockquote>
@@ -190,6 +190,10 @@
     </div>
     <!--
     <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Going to sleep tonight like... <a href="https://twitter.com/hashtag/GameOfThrones?src=hash">#GameOfThrones</a> 👏🏻 <a href="https://t.co/RMzZrs3sno">pic.twitter.com/RMzZrs3sno</a></p>&mdash; Celene Glez (@celevere17) <a href="https://twitter.com/celevere17/status/726977864952762368">May 2, 2016</a></blockquote>
+
+<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en"><p lang="en" dir="ltr">See what&#39;s trending now on <a href="https://twitter.com/hashtag/AmazonVideo?src=hash">#AmazonVideo</a>: <a href="https://t.co/uIENUr3OlB">https://t.co/uIENUr3OlB</a> <a href="https://t.co/78OotcDLxS">pic.twitter.com/78OotcDLxS</a></p>&mdash; IMDb (@IMDb) <a href="https://twitter.com/IMDb/status/727007892717580290">May 2, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>    
 -->
+    <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>  
     </body>
 </html>
