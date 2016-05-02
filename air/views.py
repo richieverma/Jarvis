@@ -639,7 +639,7 @@ def addPlayerTeam(request):
 			else:
 				add_evalScore = float(0.5*(11-int(rank)))
 			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
-			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'
+			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']-0.5)+'},"stats":{"set":'+str(feed['stats']+1)+'}'
 		elif (tab_type=='R'):
 			if (int(rank)>10):
@@ -647,7 +647,7 @@ def addPlayerTeam(request):
 			else:
 				add_evalScore = float(0.5*(11-int(rank)))			
 			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
-			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'
+			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']+1)+'},"stats":{"set":'+str(feed['stats']-0.5)+'}'
 		elif (tab_type=='C'):
 			if (int(rank)>10):
@@ -1087,7 +1087,7 @@ def deletePlayer(request):
 				add_evalScore = float(0.5*(11-int(rank)))
 
 			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
-			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'			
+			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'			
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']-0.5)+'},"stats":{"set":'+str(feed['stats']+1)+'}'
 
 		elif (tab_type=='R'):
@@ -1097,7 +1097,7 @@ def deletePlayer(request):
 				add_evalScore = float(0.5*(11-int(rank)))
 
 			my_data+=',"cur_evalScore":{"set":'+str(float(cur_evalScore)+add_evalScore)+'}'
-			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+5)+'}'			
+			my_data+=',"max_evalScore":{"set":'+str(float(max_evalScore)+10)+'}'			
 			my_data+=',"sentiment":{"set":'+str(feed['sentiment']-0.5)+'},"bias":{"set":'+str(feed['bias']+1)+'},"stats":{"set":'+str(feed['stats']-0.5)+'}'
 
 		elif (tab_type=='C'):
