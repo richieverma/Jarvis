@@ -152,7 +152,7 @@
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players in my lineup">MY TEAM</h5>
                 {% for i in myteam %}
-                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
+                <!--<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">-->
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>      
                     </blockquote>
@@ -162,17 +162,17 @@
         <div class="tweet" style="float:left;width:25%;height:100%;border: 1px solid black; overflow:scroll;">
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="What experts are saying about players in my lineup and their corresponding teams">EXPERTS</h5>
                 {% for i in experts %}
-                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
+                <!--<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">-->
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p> 
-                    </blockquote> 
+                    
                 {% endfor %}             
         </div>
 
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by teams I have shown interest in">TEAMS I LIKE</h5>
                 {% for i in teams %}
-                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
+                <!--<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">-->
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                     </blockquote>
@@ -181,7 +181,7 @@
         <div class="tweet" style="float:right;width:25%;height:100%;border: 1px solid black; overflow:scroll;"> 
             <h5 align="center"><img src={%static 'images/Twitter.png'%} height="42" width="42" title="Tweets by players I have shown interest in">PLAYERS I LIKE</h5>
                 {% for i in players %}
-                <blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">
+                <!--<blockquote class="twitter-tweet" data-cards="hidden" data-lang="en" data-conversation="none">-->
                     <p align="left"><img src="{{i.profile_image_url_https}}" height="30" width="30"><a href="https://twitter.com/{{i.screen_name}}" target="_blank">{{i.name}}</a><br>
                     <a href="https://twitter.com/{{i.screen_name}}/status/{{i.id}}" target="_blank">{{i.text}}</a></p>  
                     </blockquote>
