@@ -524,6 +524,8 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	suggest_ranking_inj(players_injured,players_nomatch,username,0.0,0.0)
 	d_team={}
 	d_sal={}
+	d_pos={}
+	d_tpos={}
 	for player in players:
 		sa_wt= 25.0
 		score=0.0
@@ -543,7 +545,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team salary','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team salary Position tweets_positive','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
@@ -553,6 +555,13 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 		except:
 			sent_score=0
 		team=decoded_json_content['response']['docs'][0]['Team']
+		position=decoded_json_content['response']['docs'][0]['Position']
+		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		d_tpos[player]=num_position
+		show_p=""
+		for p in position:
+			show_p=show_p+p+" "
+		d_pos[player]= show_p
 		#score=score + (50.0 * (stat_score/100.0))
 		bias_score=0.0
 		if bias>0.0:
@@ -570,7 +579,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	count=0
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key]}
+		diction= {"Rank":count,"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Position":d_pos[key],"Sent":+d_tpos[key]}
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
@@ -579,7 +588,7 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 	count=0
 	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key]}
+		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Position":d_pos[key],"Sent":d_tpos[key]}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)
@@ -681,6 +690,8 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 	d_injured={}
 	d_sal={}
 	d_profit={}
+	d_pos={}
+	d_tpos={}
 	for player in players_injured:
 		sa_wt= 25.0
 		score=0.0
@@ -699,7 +710,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team injured_url Injured salary','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Position Team tweets_positive injured_url Injured salary','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
@@ -709,6 +720,14 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		except:
 			sent_score = 0
 		team=decoded_json_content['response']['docs'][0]['Team']
+		position=decoded_json_content['response']['docs'][0]['Position']
+		show_p=""
+		for p in position:
+			show_p=show_p+p+" "
+		d_pos[player]= show_p
+
+		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		d_tpos[player]=num_position
 		#score=score + (50.0 * (stat_score/100.0))
 		bias_score=0.0
 		if bias>0.0:
@@ -731,7 +750,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		except:
 			d_comm[player]=""
 		if player in players_nomatch:
-			d_nom[player]="NoMatch.jpg"
+			d_nom[player]="NBAMatch.jpg"
 			players_nomatch.remove(player)
 		else:
 			d_nom[player]="Match.png"
@@ -762,11 +781,10 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		decoded_json_content = json.loads(content.decode())
 		bias=int(decoded_json_content['response']['docs'][0][pla_user])
 
-
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team salary','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score sentiment Team salary Position tweets_positive','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
@@ -776,6 +794,13 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		except:
 			sent_score=0
 		team=decoded_json_content['response']['docs'][0]['Team']
+		position=decoded_json_content['response']['docs'][0]['Position']
+		show_p=""
+		for p in position:
+			show_p=show_p+p+" "
+		d_pos[player]= show_p
+		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		d_tpos[player]=num_position
 		d_sal[player]=decoded_json_content['response']['docs'][0]['salary']
 		#score=score + (50.0 * (stat_score/100.0))
 		bias_score=0.0
@@ -789,7 +814,7 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		d_stat[player]=score_only_stat
 		d_team[player]=team
 		d_injured[player]="NBANotInjured.jpg"
-		d_nom[player]="NoMatch.jpg"
+		d_nom[player]="NBAMatch.jpg"
 		d_comm[player]=" "
 		d_injtp[player]=" "
 		if d[player]>player_2bscore and d_sal[player]<=player_2bsal:
@@ -800,7 +825,8 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 	count=0
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[key],"Injured":"/static/images/"+d_injured[key],"Injured_type":d_injtp[key],"Info":d_comm[key],"Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key]}
+		diction= {"Rank":count,"Player":key, "CScore":value,"SScore":d_stat[key], "team_url":"/static/images/"+d_team[key]+".jpg" ,"Match":"/static/images/"+d_nom[key],"Injured":"/static/images/"+d_injured[key],"Injured_type":d_injtp[key],"Info":d_comm[key],"Salary":d_sal[key],
+				  "Profit":"/static/images/"+d_profit[key],"Position":d_pos[key],"Sent":d_tpos[key]}
 		listname.append(diction)
 	with open('air/static/js/data4.json', 'wb') as outfile:
 		json.dump(listname,outfile)
@@ -817,6 +843,8 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	d_team={}
 	d_sal={}
 	d_profit={}
+	d_pos={}
+	d_tpos={}
 	for player in players:
 		sa_wt= 25.0
 		score=0.0
@@ -835,11 +863,19 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 		#print score
 
 		score_only_stat=0.0
-		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team sentiment salary','wt': 'json', 'indent': 'true'})
+		request_params = urllib.urlencode({'q':'Player:\"'+player+'\"','fl':'Score Team sentiment salary Position tweets_positive','wt': 'json', 'indent': 'true'})
 		req = urllib2.urlopen('http://52.37.29.91:8983/solr/stats/select',request_params)
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
 		stat_score=decoded_json_content['response']['docs'][0]['Score']
+		position=decoded_json_content['response']['docs'][0]['Position']
+		show_p=""
+		for p in position:
+			show_p=show_p+p+" "
+		d_pos[player]= show_p
+
+		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		d_tpos[player]=num_position
 		bias_score=0.0
 		if bias>0.0:
 			bias_score=(stat_score * (bias/25.0))
@@ -866,7 +902,7 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	count=0
 	for key, value in sorted(d.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key]}
+		diction= {"Rank":count,"Player":key, "Score":value, "team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key],"Position":d_pos[key],"Sent":d_tpos[key]}
 		listname.append(diction)
 	with open('air/static/js/data2.json', 'wb') as outfile:
 		json.dump(listname,outfile)
@@ -875,7 +911,7 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 	count=0
 	for key, value in sorted(d_stat.iteritems(), key=lambda (k,v): (v,k),reverse=True):
 		count=count+1
-		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key]}
+		diction= {"Rank":count,"Player":key, "Score":value,"team_url":"/static/images/"+d_team[key]+".jpg","Salary":d_sal[key],"Profit":"/static/images/"+d_profit[key],"Position":d_pos[key],"Sent":d_tpos[key]}
 		listname2.append(diction)
 	with open('air/static/js/data3.json', 'wb') as outfile:
 		json.dump(listname2,outfile)
