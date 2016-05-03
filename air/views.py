@@ -363,7 +363,10 @@ def suggestor(request):
 			stat_score=0.0
 			sent_score=0.0
 			stat_score=decoded_json_content['response']['docs'][0]['Score']
-			sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+			try:
+				sent_score=decoded_json_content['response']['docs'][0]['sentiment']
+			except:
+				sent_score = 0
 			request_params = urllib.urlencode({'q':'username:'+username,'fl':''+pla_user,'wt': 'json', 'indent': 'true'})
 			req = urllib2.urlopen('http://52.37.29.91:8983/solr/userData/select',request_params)
 			content = req.read()
@@ -463,7 +466,10 @@ def suggestor_addPlayer(request):
 		#print req
 		content = req.read()
 		decoded_json_content = json.loads(content.decode())
-		salary=decoded_json_content['response']['docs'][0]['salary']
+		try:
+			salary=decoded_json_content['response']['docs'][0]['salary']
+		except:
+			salary = 0
 		tot_sal=tot_sal+salary
 
 	money_left=50000-tot_sal
@@ -561,7 +567,10 @@ def suggest_ranking_addPlayer(request,players,players_injured,players_nomatch,us
 			sent_score=0
 		team=decoded_json_content['response']['docs'][0]['Team']
 		position=decoded_json_content['response']['docs'][0]['Position']
-		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		try:
+			num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		except:
+			num_position=0
 		d_tpos[player]=num_position
 		show_p=""
 		for p in position:
@@ -731,7 +740,10 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 			show_p=show_p+p+" "
 		d_pos[player]= show_p
 
-		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		try:
+			num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		except:
+			num_position=0
 		d_tpos[player]=num_position
 		#score=score + (50.0 * (stat_score/100.0))
 		bias_score=0.0
@@ -804,7 +816,10 @@ def suggest_ranking_inj(players_injured, players_nomatch, username,player_2bsal,
 		for p in position:
 			show_p=show_p+p+" "
 		d_pos[player]= show_p
-		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		try:
+			num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		except:
+			num_position=0
 		d_tpos[player]=num_position
 		d_sal[player]=decoded_json_content['response']['docs'][0]['salary']
 		#score=score + (50.0 * (stat_score/100.0))
@@ -880,7 +895,10 @@ def suggest_ranking(request, players, players_injured, players_nomatch, username
 			show_p=show_p+p+" "
 		d_pos[player]= show_p
 
-		num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		try:
+			num_position=decoded_json_content['response']['docs'][0]['tweets_positive']*100
+		except:
+			num_position=0
 		d_tpos[player]=num_position
 		bias_score=0.0
 		if bias>0.0:
